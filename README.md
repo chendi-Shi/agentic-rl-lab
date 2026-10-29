@@ -44,9 +44,16 @@ cd agentic-rl-lab
 **阶段 1（证明 loop 是对的）**：`arlab/tasks/math_env.py`
 数学题 + 代码解释器，答案精确匹配。公开证据表明 4B–7B 用 GRPO 能涨，先复现出来。
 
-**阶段 2（原创）**：`arlab/tasks/business_tasks.py` + `mcp_env.py`
-退款/确认类业务动作（状态判分），以及通过 MCP 接 `byte-agent-platform` 的
-`knowledge_search` / `service_metrics` / `incident_changes`，答案按 7 字段 JSON 逐字段给部分分。
+**阶段 2（原创）**：`tasks/stage2.json`
+从 `byte-agent-platform` 的 32 个服务任务离线生成（24 dev / 8 holdout），
+标签直接来自 `services.json`，**零人工标注**。判分按 6 个字段逐项给部分分
+（`service / error_rate / status / likely_cause / recommendation / uncertainty`）；
+`citations` 故意不参与离线判分——它只能对着 MCP 服务的实时证据 id 校验。
+
+```powershell
+& $py scripts\make_tasks.py --stage 1
+& $py scripts\make_tasks.py --stage 2 --services ..\byte-agent-platform\examples\corpus\services.json
+```
 
 ## 奖励设计要点
 

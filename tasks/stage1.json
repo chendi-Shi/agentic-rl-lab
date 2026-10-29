@@ -1,0 +1,86 @@
+[
+  {
+    "task_id": "m-01",
+    "split": "dev",
+    "family": "math",
+    "instruction": "17 * 23 + 9 等于多少？用 python 算，然后提交答案。",
+    "expected": {
+      "answer": "400"
+    },
+    "tools": [
+      "python"
+    ],
+    "max_steps": 6,
+    "meta": {}
+  },
+  {
+    "task_id": "m-02",
+    "split": "dev",
+    "family": "math",
+    "instruction": "(144 / 12) ** 2 - 19 等于多少？",
+    "expected": {
+      "answer": "125"
+    },
+    "tools": [
+      "python"
+    ],
+    "max_steps": 6,
+    "meta": {}
+  },
+  {
+    "task_id": "m-03",
+    "split": "dev",
+    "family": "math",
+    "instruction": "从 1 加到 50 的和是多少？",
+    "expected": {
+      "answer": "1275"
+    },
+    "tools": [
+      "python"
+    ],
+    "max_steps": 6,
+    "meta": {}
+  },
+  {
+    "task_id": "m-04",
+    "split": "dev",
+    "family": "math",
+    "instruction": "2 的 10 次方减去 24 是多少？",
+    "expected": {
+      "answer": "1000"
+    },
+    "tools": [
+      "python"
+    ],
+    "max_steps": 6,
+    "meta": {}
+  },
+  {
+    "task_id": "m-05",
+    "split": "dev",
+    "family": "math",
+    "instruction": "一个 12 边多边形内角和是多少度？",
+    "expected": {
+      "answer": "1800"
+    },
+    "tools": [
+      "python"
+    ],
+    "max_steps": 6,
+    "meta": {}
+  },
+  {
+    "task_id": "m-06",
+    "split": "dev",
+    "family": "math",
+    "instruction": "6! 加 5! 等于多少？",
+    "expected": {
+      "answer": "840"
+    },
+    "tools": [
+      "python"
+    ],
+    "max_steps": 6,
+    "meta": {}
+  }
+]
