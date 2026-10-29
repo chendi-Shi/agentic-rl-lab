@@ -10,12 +10,19 @@
 ```powershell
 $py = "C:\anaconda\envs\dsproject\python.exe"
 cd agentic-rl-lab
-& $py -m pytest tests -q                    # 期望 61 passed
+& $py -m pytest tests -q                    # 期望 113 passed
 & $py scripts\smoke_rollout.py              # 两阶段 + resume
 & $py scripts\build_verl_cmd.py --config configs\grpo_qwen3_4b.json --gpu 80
+
+# 全链路自检（scripted 策略，不是 baseline）
+& $py scripts\make_tasks.py --stage 1
+& $py scripts\run_baseline.py --tasks tasks\stage1.json --policy scripted --oracle answer
+& $py scripts\run_baseline.py --tasks tasks\stage2.json --policy scripted --env mcp
+& $py scripts\export_verl.py --tasks tasks\stage1.json --out data\stage1.jsonl
 ```
 
-**验收**：测试全过；smoke 里 `resume check` 的 `run=0 skipped=6`。
+**验收**：测试全过；smoke 里 `resume check` 的 `run=0 skipped=6`；
+两个 run_baseline 都是 `mean_reward≈1.07`（满分只证明管线通）。
 
 ---
 
@@ -93,14 +100,16 @@ PY
 ## 6. baseline（SFT 前 / SFT 后各一次）
 
 ```bash
-vllm serve Qwen/Qwen3-4B --port 8000 --gpu-memory-utilization 0.55 \
+vllm serve Qwen/Qwen3-8B --port 8000 --gpu-memory-utilization 0.55 \
   --max-model-len 2560 --max-num-seqs 8
 
-# 另一个终端
-python scripts/smoke_rollout.py   # 换成真实模型 policy 后
+# 另一个终端：真模型跑基线（--policy llm 才是 baseline）
+python scripts/run_baseline.py --tasks tasks/stage1.json --policy llm \
+  --base-url http://127.0.0.1:8000 --model qwen3-8b --oracle answer \
+  --config-id sft --store traces/base_sft.jsonl
 ```
 
-**验收**：每个任务至少能出 1 次非零分。
+**验收**：每个任务至少能出 1 次非零分；`tokens: in=... out=...` 不是 0（为 0 说明客户端没拿到 usage）。
 **止损**：如果 baseline 全 0，说明任务对 4B 太难 → 降难度，别调学习率。
 
 ---
@@ -134,15 +143,15 @@ python scripts/difficulty_report.py --json traces/baseline_rewards.json
 ## 9. 评测与出数
 
 ```bash
-# 相同任务、相同 seed，配对比较 SFT vs RL
-python - <<'PY'
-from arlab.eval import paired_bootstrap
-# a = sft 各任务 reward, b = rl 各任务 reward（同一批任务，顺序一致）
-print(paired_bootstrap(a, b).summary())
-PY
+# 相同任务、相同 seed，配对比较 SFT vs RL（配对相同 task id）
+python scripts/compare_runs.py \
+  --a traces/base_sft.jsonl --b traces/rl.jsonl \
+  --label-a SFT --label-b RL \
+  --out reports/compare-sft-vs-rl.json
 ```
 
-**只报有 CI 的差值。** 不显著就写"不显著"。
+**只报有 CI 的差值。** `verdict` 是 `NOT significant` 就照此写，不要挑点估计讲故事。
+同一条命令也能比较 SFT 前后的两版模型——只要两次运行的 task id 一致。
 
 ---
 

@@ -37,6 +37,11 @@ class CollapseReport:
     healthy: bool = True
 
     def summary(self) -> str:
+        if self.n_groups == 0:
+            return (
+                "[NO DATA] every task had fewer than 2 samples; GRPO needs a group "
+                "(group_size >= 2) before any advantage exists"
+            )
         verdict = "OK" if self.healthy else "COLLAPSED"
         return (
             f"[{verdict}] {self.n_collapsed}/{self.n_groups} groups have zero reward variance "

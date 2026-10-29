@@ -1,4 +1,4 @@
-"""Rollout loop: policy -> environment -> verifiable reward -> durable trace.
+﻿"""Rollout loop: policy -> environment -> verifiable reward -> durable trace.
 
 Framework-agnostic on purpose. Whether the policy is a scripted baseline, an
 OpenAI-compatible vLLM endpoint, or a verl rollout worker, the loop, the budget
@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from arlab.reward import compute_reward
-from arlab.reward.answer import compute_answer_reward
+from arlab.reward.answer import compute_task_reward
 from arlab.store.trace import TraceRecord, TraceStore, rollout_key
 from arlab.tasks.schema import Step, Task, ToolCall, Trajectory
 from arlab.tasks.env import Environment
@@ -115,7 +115,7 @@ def run_task(
     if cfg.oracle == "state":
         breakdown = compute_reward(task, traj, env.snapshot())
     else:
-        breakdown = compute_answer_reward(task, traj)
+        breakdown = compute_task_reward(task, traj)
 
     meta = {
         "wall_seconds": round(wall, 3),

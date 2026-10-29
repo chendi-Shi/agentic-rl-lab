@@ -150,6 +150,20 @@ def compute_structured_answer_reward(
     )
 
 
+def compute_task_reward(
+    task: Task, traj: Trajectory, cfg: RewardConfig = DEFAULT_CONFIG
+) -> RewardBreakdown:
+    """Dispatch on the task shape: a single ``answer`` field or a JSON object.
+
+    Stage-1 math tasks submit one value; stage-2 diagnosis tasks submit the
+    seven-field object. The runner should not have to know which is which.
+    """
+
+    if set(task.required_fields) == {"answer"}:
+        return compute_answer_reward(task, traj, cfg=cfg)
+    return compute_structured_answer_reward(task, traj, dict(task.required_fields), cfg=cfg)
+
+
 def _assemble(
     task: Task,
     traj: Trajectory,

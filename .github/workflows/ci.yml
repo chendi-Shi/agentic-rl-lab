@@ -23,7 +23,18 @@ jobs:
       - name: Unit tests
         run: python -m pytest tests -q
       - name: CPU smoke (both stages + resume)
+        run: python scripts/smoke_rollout.py
+      - name: Freeze task set and run the scripted self-check
         run: |
-          python scripts/smoke_rollout.py
+          python scripts/make_tasks.py --stage 1
+          python scripts/run_baseline.py --tasks tasks/stage1.json --policy scripted --oracle answer
+      - name: MCP path over a real stdio server
+        run: python scripts/run_baseline.py --tasks tasks/stage2.json --policy scripted --env mcp
+      - name: Export to verl format (validates every record)
+        run: python scripts/export_verl.py --tasks tasks/stage1.json --out data/stage1.jsonl
+      - name: Diagnostics and pre-flight
+        run: |
           python scripts/difficulty_report.py --demo
-          python scripts/build_verl_cmd.py --config configs/grpo_qwen3_4b.json --gpu 80
+          python scripts/build_verl_cmd.py --config configs/grpo_qwen3_8b.json --gpu 80
+          python scripts/card_fit.py --gpu 24
+          python scripts/scheduler_bench.py --episodes 64

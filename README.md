@@ -9,6 +9,7 @@
 | 模块 | 作用 | 需要 GPU |
 |---|---|---|
 | `arlab/tasks/` | 任务定义、可验证环境、合成业务环境、MCP 适配、录制回放 | 否 |
+| `arlab/policy/` | OpenAI 兼容客户端（仅标准库）+ 动作解析 + 上下文遮罩 | 否 |
 | `arlab/reward/` | 四段式状态奖励 + 答案奖励（含结构化 JSON 部分分） | 否 |
 | `arlab/rollout/` | 轨迹循环、步数预算、断点续跑 | 否 |
 | `arlab/store/` | JSONL 轨迹存储，按 `(task, policy, config, seed)` 去重 | 否 |
@@ -55,6 +56,35 @@ agentic RL 不收敛，九成不是框架问题，是这三件事：
 
 > 这是模型估算，不是实测：`--step-ms` 上卡后换成实测值，比例依然成立。
 > 同一接口也可以接真实延迟分布，不需要改调度逻辑。
+
+## 上卡前就能跑通的全链路
+
+六个脚本，全部不需要 GPU：
+
+```powershell
+$py = "C:\anaconda\envs\dsproject\python.exe"
+
+# 1. 冻结任务集（阶段 2 从 services.json 生成，零人工标注）
+& $py scripts\make_tasks.py --stage 1
+& $py scripts\make_tasks.py --stage 2 --services ..\byte-agent-platform\examples\corpus\services.json
+
+# 2. 跑一遍（--policy scripted 是自检，不是 baseline）
+& $py scripts\run_baseline.py --tasks tasks\stage1.json --policy scripted --oracle answer
+& $py scripts\run_baseline.py --tasks tasks\stage2.json --policy scripted --env mcp   # 走真实 stdio MCP
+
+# 3. 导成 verl 能吃的格式（写完即校验 schema）
+& $py scripts\export_verl.py --tasks tasks\stage1.json --out data\stage1.jsonl
+
+# 4. 两次运行配对比较（只认带 CI 的差值）
+& $py scripts\compare_runs.py --a traces\sft.jsonl --b traces\rl.jsonl --label-a SFT --label-b RL
+
+# 5. 换真模型时只改这一处
+& $py scripts\run_baseline.py --tasks tasks\stage1.json --policy llm `
+    --base-url http://127.0.0.1:8000 --model qwen3-8b --oracle answer
+```
+
+`--policy scripted` 会重放正确动作，所以它得满分只证明**管线通**，绝不能当模型成绩报。
+`--policy llm` 才是真基线。
 
 ## 快速开始
 
@@ -137,10 +167,14 @@ configs/          grpo_qwen3_4b.json · grpo_qwen3_8b.json
 ## 当前状态
 
 - [x] 任务/奖励/评测/诊断/存储/rollout 全部落地，CPU 可测
-- [x] 81 项单元测试 + 两阶段 smoke + 断点续跑
+- [x] 113 项单元测试 + 两阶段 smoke + 断点续跑
 - [x] 显存预检与命令模板
-- [x] MCP 适配 + 录制回放（离线可调试）
+- [x] MCP 适配（真 stdio 传输）+ 录制回放
 - [x] 长尾调度模型：异步补位 / partial rollout 的收益量化
+- [x] partial rollout 执行器：跨轮续跑、零重算
+- [x] 模型客户端（OpenAI 兼容，仅标准库）+ 上下文遮罩
+- [x] 轨迹 → verl 数据集导出（写完即校验）
+- [x] 配对比较脚本（bootstrap CI）
 - [ ] 第一次上卡：verl 示例（RUNBOOK 第 3 步）
 - [ ] 阶段 1 baseline 与 GRPO 曲线
 - [ ] 把调度模型接到真实 rollout（用实测延迟替换模拟值）
