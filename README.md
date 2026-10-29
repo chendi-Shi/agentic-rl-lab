@@ -73,6 +73,16 @@ cd agentic-rl-lab
 输出显存分项估算、校验项、verl 与 vLLM 命令、成本。
 4B / 8B / 24GB / 80GB 都能直接对比着算。
 
+| 配置 | 估算峰值 | 单卡 80GB | 用途 |
+|---|---:|---|---|
+| `grpo_qwen3_4b.json` | 24.8 GB | 宽松 | 快速迭代、验证 loop |
+| `grpo_qwen3_8b.json` | 48.1 GB | **舒适（主配置）** | 正式跑 |
+| `grpo_qwen3_14b_awq.json` | 60.1 GB | 可用 | 更强基座 |
+| 32B（4bit 训练 + 4bit rollout） | ~98 GB | 不够 | 需要多卡 |
+
+估算里四份常驻开销必须同时存在：训练权重、KL 参考模型、vLLM 的**另一份**权重、KV cache。
+只算权重会得出"80GB 能跑 32B 训练"的错误结论——那只是在算推理。
+
 > `arlab/train/launch.py` 里的 `VERL_OVERRIDES` 是**模板**：verl 的参数名随版本变化，
 > 第一次上卡必须对照实际版本核对这一处，其余代码不用动。
 

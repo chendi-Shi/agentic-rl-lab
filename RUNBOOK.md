@@ -62,11 +62,12 @@ cd verl && pip install -e .
 
 ```bash
 python scripts/build_verl_cmd.py \
-  --config configs/grpo_qwen3_4b.json \
+  --config configs/grpo_qwen3_8b.json \
   --gpu 80 --hours 200 --price 7
 ```
 
-**验收**：`checks: ok`；总显存估算 < 73GB。
+**验收**：`checks: ok`；总显存估算 < 73GB（8B 主配置约 48GB，14B 约 60GB）。
+**先用 `grpo_qwen3_4b.json`（约 25GB）把链路跑通，再换 8B**——loop 的 bug 和模型大小无关，小模型迭代快一倍。
 **注意**：脚本里的 verl 参数名是模板，**第一次上卡必须对照实际版本核对** `arlab/train/launch.py` 的 `VERL_OVERRIDES`。
 
 ---

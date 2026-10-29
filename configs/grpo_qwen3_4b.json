@@ -4,6 +4,9 @@
   "lora_rank": 16,
   "lora_alpha": 32,
   "lora_dropout": 0.05,
+  "train_4bit": false,
+  "rollout_4bit": false,
+  "ref_model_4bit": true,
   "lr": 1e-6,
   "group_size": 8,
   "train_batch": 32,
@@ -18,7 +21,6 @@
   "rollout_concurrency": 8,
   "vllm_gpu_util": 0.55,
   "vllm_tp": 1,
-  "ref_model_4bit": true,
-  "experiment": "arlab-grpo-qwen3-4b",
+  "experiment": "arlab-grpo-qwen3-4b-smoke",
   "tasks_file": "tasks/stage1.json"
 }

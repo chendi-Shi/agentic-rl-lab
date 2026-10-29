@@ -43,6 +43,36 @@ def test_preflight_accepts_4b_on_80gb():
     assert preflight(TrainConfig(params_b=4.0), gpu_gb=80.0) == []
 
 
+def test_preflight_accepts_8b_on_80gb():
+    """Regression: an inflated KV coefficient once reported 8B as 81GB and refused.
+
+    8B bf16 weights + 4-bit reference + a separate vLLM copy + KV for 8x3584
+    tokens is ~53GB, which fits an 80GB card comfortably.
+    """
+    cfg = TrainConfig(params_b=8.0, rollout_concurrency=8)
+    estimate = estimate_vram_gb(cfg)
+
+    assert 45.0 < estimate["total"] < 60.0
+    assert preflight(cfg, gpu_gb=80.0) == []
+
+
+def test_preflight_accepts_14b_with_quantised_rollout():
+    cfg = TrainConfig(params_b=14.0, rollout_4bit=True, rollout_concurrency=4)
+    assert preflight(cfg, gpu_gb=80.0) == []
+
+
+def test_preflight_rejects_32b_even_at_4bit():
+    cfg = TrainConfig(params_b=32.0, train_4bit=True, rollout_4bit=True, rollout_concurrency=8)
+    warnings = preflight(cfg, gpu_gb=80.0)
+    assert any("estimated" in w for w in warnings)
+
+
+def test_kv_cache_scales_with_concurrency_not_squared():
+    low = estimate_vram_gb(TrainConfig(params_b=8.0, rollout_concurrency=2))["kv_cache"]
+    high = estimate_vram_gb(TrainConfig(params_b=8.0, rollout_concurrency=8))["kv_cache"]
+    assert high == pytest.approx(low * 4, rel=0.02)  # values are rounded to 2dp
+
+
 def test_verl_command_carries_overrides():
     command = build_verl_command(TrainConfig(params_b=4.0, lora_rank=32))
     joined = " ".join(command)
@@ -53,8 +83,9 @@ def test_verl_command_carries_overrides():
 
 
 def test_vllm_command_shape():
-    command = build_vllm_command(TrainConfig())
-    assert command[:3] == ["vllm", "serve", "Qwen/Qwen3-4B"]
+    cfg = TrainConfig()
+    command = build_vllm_command(cfg)
+    assert command[:3] == ["vllm", "serve", cfg.model]
     assert "--gpu-memory-utilization" in command
 
 

@@ -4,6 +4,9 @@
   "lora_rank": 16,
   "lora_alpha": 32,
   "lora_dropout": 0.05,
+  "train_4bit": false,
+  "rollout_4bit": false,
+  "ref_model_4bit": true,
   "lr": 1e-6,
   "group_size": 8,
   "train_batch": 32,
@@ -12,13 +15,12 @@
   "entropy_coef": 0.0,
   "total_epochs": 1,
   "save_freq": 50,
-  "max_steps": 10,
-  "max_prompt_tokens": 3072,
+  "max_steps": 8,
+  "max_prompt_tokens": 2048,
   "max_response_tokens": 512,
   "rollout_concurrency": 8,
   "vllm_gpu_util": 0.55,
   "vllm_tp": 1,
-  "ref_model_4bit": true,
   "experiment": "arlab-grpo-qwen3-8b",
-  "tasks_file": "tasks/stage2.json"
+  "tasks_file": "tasks/stage1.json"
 }
