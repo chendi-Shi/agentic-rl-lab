@@ -1,5 +1,7 @@
 # agentic-rl-lab
 
+[![ci](https://github.com/chendi-Shi/agentic-rl-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/chendi-Shi/agentic-rl-lab/actions/workflows/ci.yml)
+
 单卡 agentic RL 的可验证骨架：**任务、奖励、评测、诊断四件事自己写，训练循环交给框架（verl / rLLM）。**
 
 换框架不用重写，而且这四件事占了项目成败的大头——奖励设计和难度控制错了，换什么框架都救不回来。
