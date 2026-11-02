@@ -92,7 +92,7 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 $py = "C:\anaconda\envs\dsproject\python.exe"
 cd agentic-rl-lab
 
-& $py -m pytest tests -q                              # 61 passed
+& $py -m pytest tests -q                              # 124 passed
 & $py scripts\smoke_rollout.py                        # 两阶段 + 断点续跑
 & $py scripts\replay_demo.py                          # 奖励分项演示
 & $py scripts\difficulty_report.py --demo             # 难度分档 + 塌缩检测
@@ -134,7 +134,9 @@ cd agentic-rl-lab
 
 | 配置 | 估算峰值 | 单卡 80GB | 用途 |
 |---|---:|---|---|
+| `grpo_qwen3_4b_awq24.json` | 18.6 GB | — | **4090 24G / 试机** |
 | `grpo_qwen3_4b.json` | 24.8 GB | 宽松 | 快速迭代、验证 loop |
+| `grpo_qwen3_8b_awq48.json` | 36.5 GB | — | L40S / A6000 48G |
 | `grpo_qwen3_8b.json` | 48.1 GB | **舒适（主配置）** | 正式跑 |
 | `grpo_qwen3_14b_awq.json` | 60.1 GB | 可用 | 更强基座 |
 | 32B（4bit 训练 + 4bit rollout） | ~98 GB | 不够 | 需要多卡 |
@@ -167,7 +169,7 @@ configs/          grpo_qwen3_4b.json · grpo_qwen3_8b.json
 ## 当前状态
 
 - [x] 任务/奖励/评测/诊断/存储/rollout 全部落地，CPU 可测
-- [x] 113 项单元测试 + 两阶段 smoke + 断点续跑
+- [x] 124 项单元测试 + 两阶段 smoke + 断点续跑
 - [x] 显存预检与命令模板
 - [x] MCP 适配（真 stdio 传输）+ 录制回放
 - [x] 长尾调度模型：异步补位 / partial rollout 的收益量化

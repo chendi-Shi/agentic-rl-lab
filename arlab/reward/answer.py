@@ -164,6 +164,12 @@ def compute_task_reward(
     return compute_structured_answer_reward(task, traj, dict(task.required_fields), cfg=cfg)
 
 
+def field_score(actual: Any, expected: Any) -> float:
+    """Public per-field comparison, shared with the trainer-side reward."""
+
+    return _field_score(actual, expected)
+
+
 def _assemble(
     task: Task,
     traj: Trajectory,
