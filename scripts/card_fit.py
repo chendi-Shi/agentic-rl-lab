@@ -20,6 +20,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from arlab.train import TrainConfig, estimate_vram_gb  # noqa: E402
 
 VARIANTS: list[tuple[str, float, dict]] = [
+    ("Qwen3-0.6B", 0.6, {}),
+    ("Qwen3-1.7B", 1.7, {}),
+    ("Qwen3-1.7B + 4bit rollout", 1.7, {"rollout_4bit": True}),
     ("Qwen3-4B", 4.0, {}),
     ("Qwen3-4B + 4bit rollout", 4.0, {"rollout_4bit": True}),
     ("Qwen3-4B 4bit train + 4bit rollout", 4.0, {"train_4bit": True, "rollout_4bit": True}),
