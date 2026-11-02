@@ -1,4 +1,4 @@
-"""Scripted reference policies for the built-in task sets.
+﻿"""Scripted reference policies for the built-in task sets.
 
 **These are not baselines.** They replay the correct actions and therefore score
 near-perfect on both task families. Their only job is to prove that a task set,
@@ -16,7 +16,7 @@ from arlab.tasks.business_tasks import ORDER_OF, make_business_tasks
 from arlab.tasks.math_env import make_math_tasks
 from arlab.tasks.schema import Task, ToolCall
 
-_MATH_CODE = {
+MATH_CODE = {
     "m-01": "17*23+9",
     "m-02": "(144/12)**2-19",
     "m-03": "sum(range(1,51))",
@@ -30,7 +30,7 @@ def _build() -> dict[str, list]:
     plans: dict[str, list] = {}
     for task in make_math_tasks():
         plans[task.task_id] = [
-            ToolCall("python", {"code": _MATH_CODE[task.task_id]}),
+            ToolCall("python", {"code": MATH_CODE[task.task_id]}),
             FinalAnswer(task.required_fields["answer"]),
         ]
     for task in make_business_tasks():

@@ -28,6 +28,8 @@ jobs:
         run: |
           python scripts/make_tasks.py --stage 1
           python scripts/run_baseline.py --tasks tasks/stage1.json --policy scripted --oracle answer
+      - name: LLM policy path with a fake model (HTTP -> parse -> tool -> score)
+        run: python scripts/llm_smoke.py
       - name: MCP path over a real stdio server
         run: python scripts/run_baseline.py --tasks tasks/stage2.json --policy scripted --env mcp
       - name: Export to verl format (validates every record)
