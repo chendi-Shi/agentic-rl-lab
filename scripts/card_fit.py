@@ -35,17 +35,28 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gpu", type=float, required=True, help="VRAM in GB")
     parser.add_argument("--concurrency", type=int, default=8)
+    parser.add_argument(
+        "--overhead",
+        type=float,
+        default=6.0,
+        help="GB reserved for the trainer itself (vLLM CUDA graphs, buffers). 0 = bare estimate",
+    )
     args = parser.parse_args()
 
     usable = args.gpu * 0.92
-    print(f"card {args.gpu:.0f}GB  ->  usable ~{usable:.0f}GB   (rollout concurrency {args.concurrency})")
-    print(f"{'variant':<38}{'peak':>9}{'KV':>8}   verdict")
+    budget = usable - args.overhead
+    print(
+        f"card {args.gpu:.0f}GB  ->  usable ~{usable:.0f}GB  "
+        f"minus {args.overhead:.0f}GB framework overhead = {budget:.0f}GB "
+        f"(rollout concurrency {args.concurrency})"
+    )
+    print(f"{'variant':<38}{'bare':>9}{'KV':>8}   verdict")
     print("-" * 74)
 
     for name, params, overrides in VARIANTS:
         cfg = TrainConfig(params_b=params, rollout_concurrency=args.concurrency, **overrides)
         estimate = estimate_vram_gb(cfg)
-        fits = estimate["total"] <= usable
+        fits = estimate["total"] <= budget
         print(
             f"{name:<38}{estimate['total']:>8.1f}G{estimate['kv_cache']:>7.1f}G   "
             f"{'fits' if fits else 'NO'}"
@@ -54,6 +65,9 @@ def main() -> int:
     print()
     print("Notes: four copies are resident at once (train weights, KL reference,")
     print("a separate vLLM copy, KV cache). Inference-only math is much smaller.")
+    print(f"--overhead defaults to {args.overhead:.0f}GB for the trainer's own cost "
+          "(vLLM CUDA graphs, activation buffers, framework glue).")
+    print("Set it to 0 to see the bare estimate.")
     return 0
 
 

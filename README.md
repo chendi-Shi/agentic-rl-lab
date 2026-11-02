@@ -1,4 +1,4 @@
-# agentic-rl-lab
+﻿# agentic-rl-lab
 
 [![ci](https://github.com/chendi-Shi/agentic-rl-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/chendi-Shi/agentic-rl-lab/actions/workflows/ci.yml)
 
@@ -160,6 +160,9 @@ cd agentic-rl-lab
 | `grpo_qwen3_8b.json` | 48.1 GB | **舒适（主配置）** | 正式跑 |
 | `grpo_qwen3_14b_awq.json` | 60.1 GB | 可用 | 更强基座 |
 | 32B（4bit 训练 + 4bit rollout） | ~98 GB | 不够 | 需要多卡 |
+
+> 以上是**裸估算**。真跑训练框架（verl）还要留 ~6GB 给 CUDA graph 和 buffer，
+> 所以 40GB 卡上 36.5GB 那条其实跑不起来。用 scripts/card_fit.py --gpu 40 看修正后的判定。
 
 估算里四份常驻开销必须同时存在：训练权重、KL 参考模型、vLLM 的**另一份**权重、KV cache。
 只算权重会得出"80GB 能跑 32B 训练"的错误结论——那只是在算推理。
