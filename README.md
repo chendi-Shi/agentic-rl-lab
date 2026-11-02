@@ -15,7 +15,7 @@
 | `arlab/store/` | JSONL 轨迹存储，按 `(task, policy, config, seed)` 去重 | 否 |
 | `arlab/diagnostics/` | 优势塌缩、难度分档、长度长尾 | 否 |
 | `arlab/eval/` | 配对比较 + bootstrap 置信区间 | 否 |
-| `arlab/train/` | 训练配置、显存预检、verl/vLLM 命令模板 | 否 |
+| `arlab/train/` | 训练配置、显存预检、命令模板、**自包含 GRPO 训练步** | 否 |
 | `arlab/env_check.py` | 上卡前自检 | 是 |
 
 ## 为什么先写这层
@@ -95,7 +95,7 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 $py = "C:\anaconda\envs\dsproject\python.exe"
 cd agentic-rl-lab
 
-& $py -m pytest tests -q                              # 147 passed
+& $py -m pytest tests -q                              # 167 passed
 & $py scripts\llm_smoke.py                            # LLM 多轮链路（假模型，不花钱）
 & $py scripts\make_tasks.py --stage 1 --generated 16   # 48 道训练题（3 档难度）
 & $py scripts\smoke_rollout.py                        # 两阶段 + 断点续跑
@@ -174,7 +174,7 @@ configs/          grpo_qwen3_4b.json · grpo_qwen3_8b.json
 ## 当前状态
 
 - [x] 任务/奖励/评测/诊断/存储/rollout 全部落地，CPU 可测
-- [x] 147 项单元测试 + 两阶段 smoke + 断点续跑
+- [x] 167 项单元测试 + 两阶段 smoke + 断点续跑
 - [x] 显存预检与命令模板
 - [x] MCP 适配（真 stdio 传输）+ 录制回放
 - [x] 长尾调度模型：异步补位 / partial rollout 的收益量化
