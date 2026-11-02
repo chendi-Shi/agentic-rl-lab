@@ -76,10 +76,42 @@ def stage2(out: Path, services_json: Path) -> int:
     return len(records)
 
 
+def stage1_generated(out: Path, per_tier: int, seed: int = 0) -> int:
+    """A training-sized arithmetic set: ``per_tier`` tasks in each difficulty band."""
+
+    from arlab.tasks.math_gen import generate, tier_counts, verify
+    from arlab.tasks.math_env import MathEnv
+    from arlab.tasks.schema import Task
+
+    gen = generate(per_tier=per_tier, seed=seed)
+    problems = verify(gen)
+    if problems:
+        raise SystemExit("generator produced invalid tasks:\n  " + "\n  ".join(problems[:5]))
+
+    tasks = [
+        Task(
+            task_id=item.task_id,
+            instruction=item.instruction,
+            required_fields={"answer": item.answer},
+            max_steps=6,
+            tools=MathEnv.TOOLS,
+            family="math",
+        )
+        for item in gen
+    ]
+    expected = {item.task_id: {"answer": item.answer} for item in gen}
+    meta = {item.task_id: {"tier": item.tier, "code": item.code} for item in gen}
+    count = dump_tasks(out, tasks, expected, meta=meta)
+    print("tiers:", tier_counts(gen))
+    return count
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage", type=int, choices=[1, 2], required=True)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--generated", type=int, default=0, help="tasks per difficulty tier (stage 1)")
+    parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
         "--services",
         type=Path,
@@ -88,8 +120,12 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.stage == 1:
-        out = args.out or Path("tasks/stage1.json")
-        n = stage1(out)
+        if args.generated:
+            out = args.out or Path("tasks/stage1-train.json")
+            n = stage1_generated(out, args.generated, seed=args.seed)
+        else:
+            out = args.out or Path("tasks/stage1.json")
+            n = stage1(out)
     else:
         out = args.out or Path("tasks/stage2.json")
         n = stage2(out, args.services)

@@ -1,4 +1,4 @@
-{
+﻿{
   "model": "Qwen/Qwen3-4B-AWQ",
   "params_b": 4.0,
   "lora_rank": 16,
@@ -22,5 +22,5 @@
   "vllm_gpu_util": 0.55,
   "vllm_tp": 1,
   "experiment": "arlab-grpo-qwen3-4b-4090",
-  "tasks_file": "tasks/stage1.json"
+  "tasks_file": "tasks/stage1-train.json"
 }

@@ -92,8 +92,9 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 $py = "C:\anaconda\envs\dsproject\python.exe"
 cd agentic-rl-lab
 
-& $py -m pytest tests -q                              # 127 passed
+& $py -m pytest tests -q                              # 135 passed
 & $py scripts\llm_smoke.py                            # LLM 多轮链路（假模型，不花钱）
+& $py scripts\make_tasks.py --stage 1 --generated 16   # 48 道训练题（3 档难度）
 & $py scripts\smoke_rollout.py                        # 两阶段 + 断点续跑
 & $py scripts\replay_demo.py                          # 奖励分项演示
 & $py scripts\difficulty_report.py --demo             # 难度分档 + 塌缩检测
@@ -170,7 +171,7 @@ configs/          grpo_qwen3_4b.json · grpo_qwen3_8b.json
 ## 当前状态
 
 - [x] 任务/奖励/评测/诊断/存储/rollout 全部落地，CPU 可测
-- [x] 127 项单元测试 + 两阶段 smoke + 断点续跑
+- [x] 135 项单元测试 + 两阶段 smoke + 断点续跑
 - [x] 显存预检与命令模板
 - [x] MCP 适配（真 stdio 传输）+ 录制回放
 - [x] 长尾调度模型：异步补位 / partial rollout 的收益量化

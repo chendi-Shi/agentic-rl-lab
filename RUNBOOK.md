@@ -81,31 +81,32 @@ python scripts/build_verl_cmd.py \
 
 ## 5. 任务接入
 
-阶段 1（数学 + 代码解释器）已经在 `arlab/tasks/math_env.py`，导出成 `tasks/stage1.json` 即可：
+**6 道题培养不出策略。** GRPO 每组 8 个采样，题目全对或全错都会让 advantage 归零。
+所以要生成一套有难度梯度的训练集：
 
 ```bash
-python - <<'PY'
-import json
-from arlab.tasks.math_env import make_math_tasks
-tasks = [{"task_id": t.task_id, "instruction": t.instruction,
-          "expected": t.required_fields["answer"]} for t in make_math_tasks()]
-open("tasks/stage1.json", "w", encoding="utf-8").write(json.dumps(tasks, ensure_ascii=False, indent=2))
-PY
+python scripts/make_tasks.py --stage 1 --generated 16   # 每档 16 题 = 48 题
 ```
 
-**验收**：文件非空，任务数对得上。
+三档难度（简单算术 / 折扣均值比例 / 二次方程面积复利），每题都带可执行表达式，
+生成时自动用同一个沙箱解释器验证答案 —— 模板写错会当场报错，不会变成脏奖励。
+
+**验收**：`tiers: {'easy': 16, 'medium': 16, 'hard': 16}`，文件里 48 条。
+**注意**：`tasks/stage1.json`（6 题）只用于冒烟，训练配置指向 `tasks/stage1-train.json`。
 
 ---
 
 ## 6. baseline（SFT 前 / SFT 后各一次）
 
 ```bash
-vllm serve Qwen/Qwen3-8B --port 8000 --gpu-memory-utilization 0.55 \
-  --max-model-len 2560 --max-num-seqs 8
+# 24GB 卡（4090）：4B + AWQ
+vllm serve Qwen/Qwen3-4B-AWQ --port 6006 --gpu-memory-utilization 0.85 --max-model-len 4096
+# 80GB 卡：8B + AWQ
+vllm serve Qwen/Qwen3-8B-AWQ --port 6006 --gpu-memory-utilization 0.85 --max-model-len 8192
 
 # 另一个终端：真模型跑基线（--policy llm 才是 baseline）
-python scripts/run_baseline.py --tasks tasks/stage1.json --policy llm \
-  --base-url http://127.0.0.1:8000 --model qwen3-8b --oracle answer \
+python scripts/run_baseline.py --tasks tasks/stage1-train.json --policy llm \
+  --base-url http://127.0.0.1:6006 --model Qwen/Qwen3-4B-AWQ --oracle answer \
   --config-id sft --store traces/base_sft.jsonl
 ```
 
