@@ -89,6 +89,14 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 `--policy scripted` 会重放正确动作，所以它得满分只证明**管线通**，绝不能当模型成绩报。
 `--policy llm` 才是真基线。
 
+## 为什么可以不依赖 verl 训练
+
+verl 的**多轮 agent 接口**是唯一随版本变化、又无法离线验证的部分。GRPO 的数学本身很小、很稳定、完全能在 CPU 上测，所以它被拆出来独立实现：`arlab/train/grpo.py`。
+
+- 模型是鸭子类型：只要 `model(input_ids=, attention_mask=) -> logits`，测试用 30 行玩具模型，卡上换成 PEFT 包了 LoRA 的 HF 模型
+- LoRA 的参考模型**不用额外一份**：关掉 adapter 就是 base 模型，24GB 上省 2.2GB
+- 整组奖励相同 → advantage 归零 → 梯度为零，这个死法有专门测试
+
 ## 快速开始
 
 ```powershell
