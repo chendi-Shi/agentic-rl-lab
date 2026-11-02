@@ -34,6 +34,11 @@ jobs:
         run: python scripts/run_baseline.py --tasks tasks/stage2.json --policy scripted --env mcp
       - name: Export to verl format (validates every record)
         run: python scripts/export_verl.py --tasks tasks/stage1.json --out data/stage1.jsonl
+      - name: Filter tasks by pass rate
+        run: |
+          python scripts/make_tasks.py --stage 1 --generated 4
+          python scripts/filter_tasks.py --tasks tasks/stage1-train.json \
+            --store traces/llm-smoke.jsonl --out tasks/kept.json
       - name: Diagnostics and pre-flight
         run: |
           python scripts/difficulty_report.py --demo

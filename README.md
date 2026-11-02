@@ -78,7 +78,10 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 # 4. 两次运行配对比较（只认带 CI 的差值）
 & $py scripts\compare_runs.py --a traces\sft.jsonl --b traces\rl.jsonl --label-a SFT --label-b RL
 
-# 5. 换真模型时只改这一处
+# 5. 用基线筛题（只留通过率 20-80% 的）
+& $py scripts\filter_tasks.py --tasks tasks\stage1-train.json --store traces\base_sft.jsonl --out tasks\stage1-kept.json
+
+# 6. 换真模型时只改这一处
 & $py scripts\run_baseline.py --tasks tasks\stage1.json --policy llm `
     --base-url http://127.0.0.1:8000 --model qwen3-8b --oracle answer
 ```
@@ -92,7 +95,7 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 $py = "C:\anaconda\envs\dsproject\python.exe"
 cd agentic-rl-lab
 
-& $py -m pytest tests -q                              # 135 passed
+& $py -m pytest tests -q                              # 147 passed
 & $py scripts\llm_smoke.py                            # LLM 多轮链路（假模型，不花钱）
 & $py scripts\make_tasks.py --stage 1 --generated 16   # 48 道训练题（3 档难度）
 & $py scripts\smoke_rollout.py                        # 两阶段 + 断点续跑
@@ -171,7 +174,7 @@ configs/          grpo_qwen3_4b.json · grpo_qwen3_8b.json
 ## 当前状态
 
 - [x] 任务/奖励/评测/诊断/存储/rollout 全部落地，CPU 可测
-- [x] 135 项单元测试 + 两阶段 smoke + 断点续跑
+- [x] 147 项单元测试 + 两阶段 smoke + 断点续跑
 - [x] 显存预检与命令模板
 - [x] MCP 适配（真 stdio 传输）+ 录制回放
 - [x] 长尾调度模型：异步补位 / partial rollout 的收益量化

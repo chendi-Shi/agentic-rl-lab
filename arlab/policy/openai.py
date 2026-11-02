@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -59,24 +60,17 @@ class ChatClient:
         model: str = "qwen3-8b",
         api_key: str = "EMPTY",
         timeout: float = 120.0,
+        max_retries: int = 2,
+        backoff: float = 0.3,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
         self.api_key = api_key
         self.timeout = timeout
+        self.max_retries = max(0, max_retries)
+        self.backoff = backoff
 
-    def complete(
-        self,
-        messages: Sequence[Mapping[str, str]],
-        max_tokens: int = 512,
-        temperature: float = 0.0,
-    ) -> tuple[str, Usage]:
-        payload = {
-            "model": self.model,
-            "messages": list(messages),
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-        }
+    def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
         request = urllib.request.Request(
             f"{self.base_url}/v1/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
@@ -86,13 +80,49 @@ class ChatClient:
             },
             method="POST",
         )
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                body = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            raise RuntimeError(f"HTTP {exc.code}: {exc.read().decode('utf-8', 'replace')[:400]}") from exc
-        except urllib.error.URLError as exc:
-            raise RuntimeError(f"cannot reach {self.base_url}: {exc.reason}") from exc
+        with urllib.request.urlopen(request, timeout=self.timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    def complete(
+        self,
+        messages: Sequence[Mapping[str, str]],
+        max_tokens: int = 512,
+        temperature: float = 0.0,
+    ) -> tuple[str, Usage]:
+        """POST once, retrying transient failures.
+
+        A single dropped connection must not kill a 40-minute sweep on a billed
+        box, so 5xx and transport errors are retried with exponential backoff.
+        4xx is not: a bad request will fail the same way every time.
+        """
+
+        payload = {
+            "model": self.model,
+            "messages": list(messages),
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+        }
+
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                body = self._post(payload)
+                break
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode("utf-8", "replace")[:200]
+                error = RuntimeError(f"HTTP {exc.code}: {detail}")
+                if exc.code < 500:
+                    raise error from exc
+                last_error = error
+            except urllib.error.URLError as exc:
+                last_error = RuntimeError(f"cannot reach {self.base_url}: {exc.reason}")
+            except TimeoutError as exc:
+                last_error = RuntimeError(f"timeout after {self.timeout}s: {exc}")
+
+            if attempt < self.max_retries:
+                time.sleep(self.backoff * (2**attempt))
+        else:
+            raise last_error or RuntimeError("request failed")
 
         choice = (body.get("choices") or [{}])[0]
         text = (choice.get("message") or {}).get("content") or ""
@@ -182,12 +212,16 @@ class LLMPolicy:
         temperature: float = 0.0,
         max_observation_chars: int = 600,
         keep_recent: int = 3,
+        error_mode: str = "invalid",
     ) -> None:
+        if error_mode not in {"invalid", "raise"}:
+            raise ValueError(f"unknown error_mode: {error_mode!r}")
         self.client = client
         self.max_tokens = max_tokens
         self.temperature = temperature
         self.max_observation_chars = max_observation_chars
         self.keep_recent = keep_recent
+        self.error_mode = error_mode
         self.last_usage: Usage = Usage()
 
     def __call__(self, task: Task, steps: list[Step]) -> ToolCall | FinalAnswer:
@@ -197,9 +231,18 @@ class LLMPolicy:
             max_observation_chars=self.max_observation_chars,
             keep_recent=self.keep_recent,
         )
-        text, usage = self.client.complete(
-            messages, max_tokens=self.max_tokens, temperature=self.temperature
-        )
+        try:
+            text, usage = self.client.complete(
+                messages, max_tokens=self.max_tokens, temperature=self.temperature
+            )
+        except RuntimeError as exc:
+            # One bad request should cost one step, not the whole sweep. The
+            # invalid call is recorded and scored, so the loss shows up as a
+            # lower reward rather than a crashed run.
+            if self.error_mode == "raise":
+                raise
+            self.last_usage = Usage()
+            return ToolCall(INVALID_TOOL, {"error": str(exc)[:200]})
         self.last_usage = usage
         return parse_action(text)
 

@@ -118,11 +118,16 @@ python scripts/run_baseline.py --tasks tasks/stage1-train.json --policy llm \
 ## 7. 难度筛选（这一步决定 RL 会不会学）
 
 ```bash
-python scripts/difficulty_report.py --json traces/baseline_rewards.json
+python scripts/filter_tasks.py \
+  --tasks tasks/stage1-train.json \
+  --store traces/base_sft.jsonl \
+  --out tasks/stage1-kept.json
 ```
 
-**验收**：`keep` 里至少 30 个任务；`[OK]` 而非 `[COLLAPSED]`。
-**规则**：只留通过率 20–80% 的任务。全 0 或全 1 的任务对 GRPO 是纯浪费算力。
+**验收**：`kept` 至少 30 个任务；`too_hard` 不应该占多数。
+**规则**：只留通过率 20–80% 的任务。全对或全错的任务对 GRPO 是纯浪费算力。
+**注意**：通过 = `r_task == 1.0`（完全解出），不是 `reward > 0` —— 有部分分时后者会显示全部通过。
+**然后**：把训练配置的 `tasks_file` 指向 `tasks/stage1-kept.json`，用筛过的集合训练。
 
 ---
 
