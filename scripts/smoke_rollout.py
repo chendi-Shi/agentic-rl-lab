@@ -1,4 +1,4 @@
-﻿"""CPU end-to-end smoke test for both stages, with resume.
+"""CPU end-to-end smoke test for both stages, with resume.
 
     python scripts/smoke_rollout.py
 
@@ -71,7 +71,21 @@ def claim_only_policy(task: Task, steps):
     return FinalAnswer("已完成")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--fresh",
+        action="store_true",
+        help="delete the smoke store first, so every episode actually runs",
+    )
+    args = parser.parse_args(argv)
+
+    if args.fresh and STORE.exists():
+        STORE.unlink()
+        print(f"(deleted {STORE} for a fresh run)")
+
     store = TraceStore(STORE)
     stage1 = make_math_tasks()
     stage2 = make_business_tasks()

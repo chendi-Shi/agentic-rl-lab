@@ -1,4 +1,4 @@
-﻿"""Run a frozen task set and record it.
+"""Run a frozen task set and record it.
 
     # pipeline self-check, no model, no GPU
     python scripts/run_baseline.py --tasks tasks/stage1.json --policy scripted --oracle answer
@@ -74,7 +74,12 @@ def make_env_factory(loaded: list[LoadedTask], env_kind: str, mcp_command: str):
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tasks", type=Path, required=True)
-    parser.add_argument("--store", type=Path, default=Path("traces/baseline.jsonl"))
+    parser.add_argument(
+        "--store",
+        type=Path,
+        default=None,
+        help="defaults to traces/baseline-<task-file>.jsonl so two task sets never mix",
+    )
     parser.add_argument("--policy", choices=["scripted", "llm"], default="scripted")
     parser.add_argument("--env", choices=["auto", "math", "business", "mcp"], default="auto")
     parser.add_argument(
@@ -98,6 +103,11 @@ def main() -> int:
         loaded = loaded[: args.limit]
     if not loaded:
         raise SystemExit("no tasks matched")
+
+    # One store per task set: sharing a store across stage 1 and stage 2 mixes
+    # their rewards and makes the difficulty report meaningless.
+    if args.store is None:
+        args.store = Path("traces") / f"baseline-{args.tasks.stem}.jsonl"
 
     env_factory, default_oracle = make_env_factory(loaded, args.env, args.mcp_command)
     oracle = args.oracle or default_oracle
@@ -159,9 +169,14 @@ def main() -> int:
         "difficulty": {"kept": diff.kept, "too_easy": diff.too_easy, "too_hard": diff.too_hard},
         "length": tail,
     }
-    out = args.reports_dir / f"baseline-{policy_name.replace(':', '-')}.json"
+    out = args.reports_dir / f"baseline-{args.tasks.stem}-{policy_name.replace(':', '-')}.json"
     out.write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"written: {out}")
+
+    if result.n_run == 0 and result.n_skipped:
+        print()
+        print(f"NOTE: all {result.n_skipped} rollouts were already in {args.store}.")
+        print("      Delete that file (or pass a different --store) to run them again.")
 
     if args.policy == "scripted":
         print()
