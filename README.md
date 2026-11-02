@@ -1,4 +1,4 @@
-﻿# agentic-rl-lab
+# agentic-rl-lab
 
 [![ci](https://github.com/chendi-Shi/agentic-rl-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/chendi-Shi/agentic-rl-lab/actions/workflows/ci.yml)
 
@@ -89,9 +89,16 @@ $py = "C:\anaconda\envs\dsproject\python.exe"
 `--policy scripted` 会重放正确动作，所以它得满分只证明**管线通**，绝不能当模型成绩报。
 `--policy llm` 才是真基线。
 
-## 为什么可以不依赖 verl 训练
+## 训练路径：verl 为主，自研为对照
 
-verl 的**多轮 agent 接口**是唯一随版本变化、又无法离线验证的部分。GRPO 的数学本身很小、很稳定、完全能在 CPU 上测，所以它被拆出来独立实现：`arlab/train/grpo.py`。
+**主路径是 verl**（求职上它是关键词，面试会问）。接入方案见 [docs/VERL_ZH.md](docs/VERL_ZH.md)，三个挂载点里两个已经做完（数据导出、奖励函数），只剩多轮环境循环要看装上的版本再定。
+
+自研的 `arlab/train/grpo.py` **保留**，用途有两个：
+
+- **数值对照**：同一批样本分别喂 verl 和自研实现，比 `ratio` / `policy_loss` / `kl`。差一个数量级就说明某侧有 bug
+- **兜底**：verl 装不上、或接口要求改框架源码时，训练不至于归零
+
+自研实现本身是可测的：
 
 - 模型是鸭子类型：只要 `model(input_ids=, attention_mask=) -> logits`，测试用 30 行玩具模型，卡上换成 PEFT 包了 LoRA 的 HF 模型
 - LoRA 的参考模型**不用额外一份**：关掉 adapter 就是 base 模型，24GB 上省 2.2GB

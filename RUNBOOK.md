@@ -131,11 +131,29 @@ python scripts/filter_tasks.py \
 
 ---
 
-## 8. GRPO 训练
+## 8. GRPO 训练（verl）
+
+**先探测版本，再决定怎么接** —— 不要先写代码：
 
 ```bash
-# 用第 4 步打印出来的命令
+pip install verl
+python -c "import verl; print(getattr(verl,'__version__','unknown'))"
+python -c "import verl,pkgutil; print([m.name for m in pkgutil.iter_modules(verl.__path__)])"
 ```
+
+判据看 [docs/VERL_ZH.md](../docs/VERL_ZH.md) 第 2 节：
+- 有 agent/agent_loop 子模块 → 路径 A（30–50 行 adapter）
+- 只有单轮 rollout → 路径 B（100–150 行 wrapper）
+- 要改框架源码 → 止损，用自研 `arlab/train/grpo.py`
+
+挂载点（配置，不改代码）：
+
+```bash
+custom_reward_function.path=arlab/train/verl_reward.py
+custom_reward_function.name=compute_score
+```
+
+数据集用 `scripts/export_verl.py` 的产物，训练配置里的 `tasks_file` 用筛过的 `tasks/stage1-kept.json`。
 
 **训练中必须盯的三条**（前 100 步就能看出问题）：
 1. `reward` 是否单调不降 —— 平的不动就是塌缩
