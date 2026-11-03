@@ -10,6 +10,8 @@ from arlab.policy.openai import (
     annotate_tokens,
     build_messages,
     parse_action,
+    strip_think,
+    system_prompt,
 )
 
 __all__ = [
@@ -20,4 +22,6 @@ __all__ = [
     "annotate_tokens",
     "build_messages",
     "parse_action",
+    "strip_think",
+    "system_prompt",
 ]

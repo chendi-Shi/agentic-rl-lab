@@ -116,6 +116,57 @@ def test_build_messages_masks_old_observations():
     assert len(observations[-1]) <= len("observation: ") + 100 + 4  # recent one is truncated, not dropped
 
 
+# --------------------------------------------------------------- thinking
+
+
+def test_think_block_is_stripped_before_parsing():
+    """Qwen3 emits <think> first; naive brace matching would grab braces inside it."""
+    text = (
+        "<think>\nThe user wants 15**2 - 7. I could write {\"code\": \"15**2-7\"} maybe.\n</think>\n"
+        '{"tool": "python", "args": {"code": "15**2-7"}}'
+    )
+    action = parse_action(text)
+
+    assert isinstance(action, ToolCall)
+    assert action.name == "python"
+    assert action.args == {"code": "15**2-7"}
+
+
+def test_think_block_before_final_answer():
+    text = "<think>218</think>{\"final_answer\": \"218\"}"
+    action = parse_action(text)
+
+    assert isinstance(action, FinalAnswer)
+    assert action.text == "218"
+
+
+def test_unterminated_think_is_invalid():
+    """An unclosed block means the model never produced an action."""
+    action = parse_action("<think>still thinking about {1, 2, 3}")
+    assert action.name == INVALID_TOOL
+
+
+def test_real_newline_inside_json_string_still_parses():
+    """Models put literal newlines in code strings; that is invalid JSON but clear.
+
+    Regression: json.loads raised "Unterminated string" and the whole step was
+    scored as an invalid tool call.
+    """
+    text = '{"tool": "python", "args": {"code": "result = 15**2 - 7\nprint(result)"}}'
+    action = parse_action(text)
+
+    assert isinstance(action, ToolCall)
+    assert action.name == "python"
+    assert "print(result)" in action.args["code"]
+
+
+def test_strip_think_is_exported():
+    from arlab.policy import strip_think
+
+    assert strip_think("a<think>b</think>c") == "ac"
+    assert strip_think("no tags") == "no tags"
+
+
 # ------------------------------------------------------------------ client
 
 

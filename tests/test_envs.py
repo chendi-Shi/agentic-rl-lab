@@ -94,6 +94,27 @@ def test_arithmetic_executor_accepts_plain_arithmetic():
     assert ex.run("print(2**10-24)") == "1000"
 
 
+def test_arithmetic_executor_runs_statements():
+    """Real models write `x = ...` and `print(...)`, not bare expressions.
+
+    Regression: the tool used to parse with mode='eval', so every multi-line
+    answer came back as "SyntaxError: invalid syntax" and the task scored zero.
+    """
+    ex = ArithmeticExecutor()
+
+    assert ex.run("x = 36 * 13 / 4\nprint(x)") == "117.0"
+    assert ex.run("result = 15**2 - 7\nprint(result)") == "218"
+    # trailing expression instead of print
+    assert ex.run("a = 10\nb = 4\na * b") == "40"
+
+
+def test_arithmetic_executor_rejects_dunder_names():
+    ex = ArithmeticExecutor()
+    for bad in ("__builtins__", "x = __loader__"):
+        with pytest.raises(ValueError):
+            ex.run(bad)
+
+
 def test_arithmetic_executor_rejects_escapes():
     ex = ArithmeticExecutor()
     for bad in ("__import__('os')", "open('x')", "(1).__class__", "[1][0]", "lambda: 1"):

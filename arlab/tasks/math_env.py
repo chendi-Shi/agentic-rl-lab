@@ -48,7 +48,7 @@ _FORBIDDEN = (ast.Attribute, ast.Subscript, ast.Lambda, ast.Import, ast.ImportFr
 
 
 class ArithmeticExecutor:
-    """Evaluates a single arithmetic expression, no I/O, no imports."""
+    """Runs one expression, or a short block of statements, with no I/O."""
 
     max_code_chars = 2000
 
@@ -58,17 +58,59 @@ class ArithmeticExecutor:
             raise ValueError("empty code")
         if len(code) > self.max_code_chars:
             raise ValueError("code too long")
-        tree = ast.parse(code, mode="eval")
+
+        # Models write both `17*23+9` and `x = 17*23+9 \\n print(x)`. Accept a
+        # module, run the body, and return the last expression's value or
+        # whatever was printed -- statements are the common case, so treating
+        # them as a syntax error would fail most real replies.
+        try:
+            tree = ast.parse(code)
+        except SyntaxError:
+            tree = ast.parse(code, mode="eval")
+
         self._validate(tree)
-        value = eval(compile(tree, "<tool>", "eval"), {"__builtins__": {}}, dict(_ALLOWED_CALLS))
-        return str(value)
+        namespace = {"__builtins__": {}}
+        namespace.update(_ALLOWED_CALLS)
+
+        printed: list[str] = []
+
+        def _print(*args, **kwargs) -> None:
+            printed.append(" ".join(str(a) for a in args))
+
+        namespace["print"] = _print
+
+        body = getattr(tree, "body", [])
+        value = None
+        if isinstance(tree, ast.Expression):
+            value = eval(compile(tree, "<tool>", "eval"), namespace, namespace)
+        elif body and isinstance(body[-1], ast.Expr):
+            head = ast.Module(body=body[:-1], type_ignores=[])
+            if body[:-1]:
+                exec(compile(head, "<tool>", "exec"), namespace, namespace)
+            value = eval(compile(ast.Expression(body[-1].value), "<tool>", "eval"), namespace, namespace)
+        else:
+            exec(compile(tree, "<tool>", "exec"), namespace, namespace)
+
+        if printed:
+            return "\n".join(printed)
+        return "" if value is None else str(value)
 
     def _validate(self, tree: ast.AST) -> None:
+        """Block the escape hatches, allow ordinary code.
+
+        Attribute access and subscripts are the classic sandbox escapes
+        (``().__class__``), so they stay forbidden. Plain assignments and local
+        names are allowed: real models write ``x = ...`` far more often than a
+        bare expression, and rejecting that turns every task into a syntax error.
+        """
+
         for node in ast.walk(tree):
             if isinstance(node, _FORBIDDEN):
                 raise ValueError(f"forbidden construct: {type(node).__name__}")
-            if isinstance(node, ast.Name) and node.id not in _ALLOWED_NAMES | {"print"}:
-                raise ValueError(f"unknown name: {node.id}")
+            if isinstance(node, ast.Name) and node.id.startswith("__"):
+                raise ValueError(f"dunder name: {node.id}")
+            if isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef)):
+                raise ValueError(f"forbidden construct: {type(node).__name__}")
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 if node.func.id not in _ALLOWED_CALLS:
                     raise ValueError(f"unknown function: {node.func.id}")

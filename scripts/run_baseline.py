@@ -93,6 +93,11 @@ def main() -> int:
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument("--model", default="qwen3-8b")
     parser.add_argument("--max-tokens", type=int, default=512)
+    parser.add_argument(
+        "--no-think",
+        action="store_true",
+        help="disable reasoning models' thinking block (Qwen3: enable_thinking=false)",
+    )
     parser.add_argument("--split", default=None, help="only run this split (dev / holdout)")
     parser.add_argument("--limit", type=int, default=0, help="run at most N tasks")
     parser.add_argument("--reports-dir", type=Path, default=Path("reports"))
@@ -117,7 +122,10 @@ def main() -> int:
         policy = scripted_policy_for
         policy_name = "scripted"
     else:
-        client = ChatClient(base_url=args.base_url, model=args.model)
+        extra = (
+            {"chat_template_kwargs": {"enable_thinking": False}} if args.no_think else None
+        )
+        client = ChatClient(base_url=args.base_url, model=args.model, extra_body=extra)
         llm = LLMPolicy(client, max_tokens=args.max_tokens)
         policy_name = f"llm:{args.model}"
 

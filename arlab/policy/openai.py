@@ -62,6 +62,7 @@ class ChatClient:
         timeout: float = 120.0,
         max_retries: int = 2,
         backoff: float = 0.3,
+        extra_body: dict[str, Any] | None = None,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
@@ -69,6 +70,9 @@ class ChatClient:
         self.timeout = timeout
         self.max_retries = max(0, max_retries)
         self.backoff = backoff
+        # Server-side switches that are not part of the OpenAI schema, e.g.
+        # {"chat_template_kwargs": {"enable_thinking": False}} for Qwen3.
+        self.extra_body = dict(extra_body or {})
 
     def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
         request = urllib.request.Request(
@@ -102,6 +106,7 @@ class ChatClient:
             "max_tokens": max_tokens,
             "temperature": temperature,
         }
+        payload.update(self.extra_body)
 
         last_error: Exception | None = None
         for attempt in range(self.max_retries + 1):
@@ -133,32 +138,52 @@ class ChatClient:
         )
 
 
+_THINK = re.compile(r"<think(?:ing)?>.*?</think(?:ing)?>", re.DOTALL | re.IGNORECASE)
+_THINK_OPEN = re.compile(r"<think(?:ing)?>", re.IGNORECASE)
+
+
+def strip_think(text: str) -> str:
+    """Remove a reasoning model's ``<think>...</think>`` blocks.
+
+    Qwen3 and friends emit their reasoning *before* the action, and that text can
+    contain braces (code, JSON examples), which makes naive brace matching pick
+    the wrong object. An unterminated block means the model never finished
+    thinking, so there is no action to find.
+    """
+
+    cleaned = _THINK.sub("", text or "")
+    return "" if _THINK_OPEN.search(cleaned) else cleaned
+
+
 def parse_action(text: str) -> ToolCall | FinalAnswer:
     """Turn one model reply into an action. Never raises."""
 
-    candidate = text or ""
+    raw = (text or "")[:200]
+    candidate = strip_think(text or "")
     match = _FENCE.search(candidate)
     if match:
         candidate = match.group(1)
     else:
         start, end = candidate.find("{"), candidate.rfind("}")
         if start == -1 or end <= start:
-            return ToolCall(INVALID_TOOL, {"raw": (text or "")[:200]})
+            return ToolCall(INVALID_TOOL, {"raw": raw})
         candidate = candidate[start : end + 1]
 
     try:
-        payload = json.loads(candidate)
+        # strict=False: LLMs habitually put real newlines inside JSON strings
+        # (code snippets), which is invalid JSON but unambiguous.
+        payload = json.loads(candidate, strict=False)
     except json.JSONDecodeError:
-        return ToolCall(INVALID_TOOL, {"raw": (text or "")[:200]})
+        return ToolCall(INVALID_TOOL, {"raw": raw})
 
     if not isinstance(payload, dict):
-        return ToolCall(INVALID_TOOL, {"raw": (text or "")[:200]})
+        return ToolCall(INVALID_TOOL, {"raw": raw})
     if "final_answer" in payload:
         return FinalAnswer(str(payload["final_answer"]))
     tool = payload.get("tool") or payload.get("name")
     args = payload.get("args") or payload.get("arguments") or {}
     if not isinstance(tool, str) or not isinstance(args, dict):
-        return ToolCall(INVALID_TOOL, {"raw": (text or "")[:200]})
+        return ToolCall(INVALID_TOOL, {"raw": raw})
     return ToolCall(tool, args)
 
 
