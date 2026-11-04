@@ -38,11 +38,27 @@ _SYSTEM = (
     "Available tools: <TOOLS>"
 )
 
+#: Argument shapes for the tools we ship. Without this the model invents its own
+#: schema -- Qwen3-4B sent {"operation": "multiply", "a": ..., "b": ...} to a
+#: tool that takes one "expression" string, and burned eight steps on the error.
+TOOL_HINTS = {
+    "orders.get": 'args = {"order_id": "<id>"}',
+    "calc": 'args = {"expression": "<arithmetic expression>"}',
+    "orders.refund": 'args = {"order_id": "<id>"}',
+    "shipping.track": 'args = {"order_id": "<id>"}',
+    "python": 'args = {"code": "<python expression or statements>"}',
+}
+
 
 def system_prompt(tools: Sequence[str]) -> str:
     """Render the system prompt; tool names are substituted, braces are literal."""
 
-    return _SYSTEM.replace("<TOOLS>", ", ".join(tools) or "(none)")
+    names = ", ".join(tools) or "(none)"
+    hints = [f"  {name} {TOOL_HINTS[name]}" for name in tools if name in TOOL_HINTS]
+    prompt = _SYSTEM.replace("<TOOLS>", names)
+    if hints:
+        prompt += "\nArgument shapes:\n" + "\n".join(hints)
+    return prompt
 
 
 @dataclass(frozen=True)

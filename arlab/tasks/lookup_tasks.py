@@ -52,12 +52,50 @@ class LookupEnv(SyntheticBusinessEnv):
     def tool_names(self) -> tuple[str, ...]:
         return self.TOOLS
 
+    _OPS = {
+        "multiply": "*",
+        "mul": "*",
+        "times": "*",
+        "add": "+",
+        "plus": "+",
+        "subtract": "-",
+        "minus": "-",
+        "divide": "/",
+        "div": "/",
+        "power": "**",
+        "pow": "**",
+    }
+
+    def _expression_from(self, args: Mapping[str, Any]) -> str:
+        """Accept the expression, or rebuild it from an operation triple.
+
+        Models ignore the declared arg shape: Qwen3-4B sent
+        ``{"operation": "multiply", "a": 199.0, "b": 7.5}`` and every one of its
+        eight steps failed on a schema complaint instead of learning the task.
+        Rebuilding the expression keeps the episode about the arithmetic.
+        """
+
+        for key in ("expression", "code", "expr"):
+            value = args.get(key)
+            if isinstance(value, str) and value.strip():
+                return value
+
+        op = str(args.get("operation") or args.get("op") or "").lower()
+        symbol = self._OPS.get(op)
+        left, right = args.get("a"), args.get("b")
+        if symbol and left is not None and right is not None:
+            try:
+                return f"({float(left)}){symbol}({float(right)})"
+            except (TypeError, ValueError):
+                pass
+        raise ValueError(
+            "calc needs {'expression': '<expr>'}, or operation/a/b "
+            "(for example {'operation': 'multiply', 'a': 199.0, 'b': 7.5})"
+        )
+
     def call(self, name: str, args: Mapping[str, Any]) -> str:
         if name == "calc":
-            expression = args.get("expression") or args.get("code")
-            if not isinstance(expression, str) or not expression.strip():
-                raise ValueError("calc requires a non-empty 'expression' string")
-            return self._calc.run(expression)
+            return self._calc.run(self._expression_from(args))
         return super().call(name, args)
 
 
