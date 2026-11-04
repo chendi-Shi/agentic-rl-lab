@@ -312,6 +312,72 @@ def _aggregate_tasks(ids: tuple[str, ...]) -> list[LookupTask]:
             f"round(sum([x*x for x in {literal}]), 2)",
         )
     )
+
+    out.extend(_subset_tasks(ids))
+    return out
+
+
+def _subset_tasks(ids: tuple[str, ...]) -> list[LookupTask]:
+    """Two-, three- and four-order subsets with logic operations over the values.
+
+    The six-order versions above only yield ten tasks, and ten is too thin to see
+    a training curve. Subsets keep the same failure mode (logic over several
+    observed values) while giving the sampler enough variety. Sizes are mixed on
+    purpose: three values might be tractable while four are not, and that boundary
+    is exactly where a learnable pass rate lives.
+    """
+
+    from itertools import combinations
+
+    out: list[LookupTask] = []
+
+    def add(task_id: str, instruction: str, answer: str, subset, expression: str) -> None:
+        out.append(_build(task_id, instruction, answer, subset, expression))
+
+    for size in (2, 3, 4):
+        for subset in combinations(ids, size):
+            amounts = [_amount(oid) for oid in subset]
+            literal = "[" + ", ".join(repr(a) for a in amounts) + "]"
+            listed = "、".join(subset)
+            tag = "-".join(o[-3:] for o in subset)
+
+            add(
+                f"sub-max-{tag}",
+                f"订单 {listed} 中金额最大的是多少元？",
+                _fmt(round(max(amounts), 2)),
+                subset,
+                f"round(max({literal}), 2)",
+            )
+            add(
+                f"sub-min-{tag}",
+                f"订单 {listed} 中金额最小的是多少元？",
+                _fmt(round(min(amounts), 2)),
+                subset,
+                f"round(min({literal}), 2)",
+            )
+            if size >= 3:
+                add(
+                    f"sub-count-mean-{tag}",
+                    f"订单 {listed} 中，金额高于这几个订单平均值的有几个？",
+                    str(len([a for a in amounts if a > sum(amounts) / len(amounts)])),
+                    subset,
+                    f"len([x for x in {literal} if x > sum({literal})/len({literal})])",
+                )
+                add(
+                    f"sub-over-{tag}",
+                    f"订单 {listed} 中金额超过 500 元的那部分合计多少元？没有则填 0。",
+                    _fmt(round(sum(a for a in amounts if a > 500), 2)),
+                    subset,
+                    f"round(sum([x for x in {literal} if x > 500]), 2)",
+                )
+            if size == 4:
+                add(
+                    f"sub-median-{tag}",
+                    f"订单 {listed} 的金额中位数是多少元？（保留两位小数）",
+                    _fmt(round((sorted(amounts)[1] + sorted(amounts)[2]) / 2, 2)),
+                    subset,
+                    f"round(median({literal}), 2)",
+                )
     return out
 
 

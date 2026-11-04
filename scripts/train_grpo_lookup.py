@@ -42,7 +42,7 @@ def as_dict(record: Any) -> dict[str, Any]:
 def collect_group(
     task,
     env_cls,
-    policy,
+    policy_factory,
     cfg: RunnerConfig,
     *,
     store: TraceStore,
@@ -53,10 +53,11 @@ def collect_group(
     system = system_prompt(task.tools)
 
     for index in range(group_size):
-        # Each rollout needs its own resume key *and* its own sampling seed:
-        # reusing one seed makes the group four identical samples, which is the
-        # exact failure that produced zero advantage in the first baseline run.
+        # Each rollout needs its own resume key *and* its own sampling seed.
+        # Reusing one seed made all eight samples byte-identical even at
+        # temperature 0.9, because the seed travels in the request body.
         rollout_cfg = dataclasses.replace(cfg, seed=cfg.seed * 100 + index)
+        policy = policy_factory(rollout_cfg.seed)
         record = as_dict(
             run_task(task, env_cls, policy, rollout_cfg, policy_name="llm", store=store)
         )
@@ -80,7 +81,9 @@ def main() -> int:
     parser.add_argument("--served-model", default="qwen3-4b")
     parser.add_argument("--steps", type=int, default=12)
     parser.add_argument("--group-size", type=int, default=4)
-    parser.add_argument("--lr", type=float, default=1e-5)
+    parser.add_argument("--lr", type=float, default=1e-6)
+    parser.add_argument("--kl-coef", type=float, default=0.001)
+    parser.add_argument("--lora-dropout", type=float, default=0.05)
     parser.add_argument("--temperature", type=float, default=0.9)
     parser.add_argument("--max-length", type=int, default=1536)
     parser.add_argument("--store", type=Path, default=Path("traces/grpo-train.jsonl"))
@@ -105,7 +108,7 @@ def main() -> int:
         LoraConfig(
             r=16,
             lora_alpha=32,
-            lora_dropout=0.0,
+            lora_dropout=args.lora_dropout,
             bias="none",
             task_type="CAUSAL_LM",
             target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
@@ -116,18 +119,19 @@ def main() -> int:
     optimizer = torch.optim.AdamW(
         [p for p in model.parameters() if p.requires_grad], lr=args.lr
     )
-    trainer = GRPOTrainer(model, optimizer, GRPOConfig())
+    trainer = GRPOTrainer(model, optimizer, GRPOConfig(kl_coef=args.kl_coef))
     store = TraceStore(args.store)
 
-    client = ChatClient(
-        base_url=args.base_url,
-        model=args.served_model,
-        extra_body={"chat_template_kwargs": {"enable_thinking": False}, "seed": 0},
-    )
-    llm = LLMPolicy(client, max_tokens=512, temperature=args.temperature)
+    def policy_factory(seed: int):
+        """One client per rollout: the sampling seed is part of the request body."""
 
-    def policy(task, steps):  # noqa: ANN001 - matches the runner contract
-        return llm(task, steps)
+        client = ChatClient(
+            base_url=args.base_url,
+            model=args.served_model,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}, "seed": seed},
+        )
+        llm = LLMPolicy(client, max_tokens=512, temperature=args.temperature)
+        return lambda task, steps: llm(task, steps)
 
     history: list[dict[str, float]] = []
     started = time.time()
@@ -138,7 +142,7 @@ def main() -> int:
         cfg = RunnerConfig(config_id="grpo", seed=step, oracle="answer")
 
         episodes, rewards = collect_group(
-            task, env_cls, policy, cfg, store=store, group_size=args.group_size
+            task, env_cls, policy_factory, cfg, store=store, group_size=args.group_size
         )
         advantages = group_advantages(rewards, [task.task_id] * len(rewards))
 
