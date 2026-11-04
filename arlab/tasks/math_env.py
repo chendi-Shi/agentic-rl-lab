@@ -18,6 +18,7 @@ from __future__ import annotations
 import ast
 import math
 import re
+import statistics
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -50,6 +51,7 @@ _ALLOWED_CALLS = {
     "ceil": math.ceil,
     "log": math.log,
     "exp": math.exp,
+    "median": statistics.median,
     "print": lambda *args: " ".join(str(a) for a in args),
 }
 _FORBIDDEN = (ast.Attribute, ast.Subscript, ast.Lambda, ast.Import, ast.ImportFrom)

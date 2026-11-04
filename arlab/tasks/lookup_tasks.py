@@ -196,6 +196,122 @@ def make_lookup_tasks() -> list[LookupTask]:
                     f"round(({a}+{b})*0.9, 2)",
                 )
             )
+    out.extend(_aggregate_tasks(ids))
+    return out
+
+
+def _aggregate_tasks(ids: tuple[str, ...]) -> list[LookupTask]:
+    """Tasks that need every order fetched before anything can be computed.
+
+    The two-call tasks above turned out to be free once the tool schemas were
+    spelled out in the prompt: 74 of 75 solved 4/4. What is actually hard for a
+    4B model is holding six numbers from six separate observations in context and
+    combining them, which is what these require.
+    """
+
+    amounts = [_amount(oid) for oid in ids]
+    listed = "、".join(ids)
+    literal = "[" + ", ".join(repr(a) for a in amounts) + "]"
+    out: list[LookupTask] = []
+
+    out.append(
+        _build(
+            "agg-sum-all",
+            f"订单 {listed} 的金额合计是多少元？需要逐个查询。",
+            _fmt(round(sum(amounts), 2)),
+            ids,
+            f"round(sum({literal}), 2)",
+        )
+    )
+    out.append(
+        _build(
+            "agg-avg-all",
+            f"订单 {listed} 的平均金额是多少元？（保留两位小数）",
+            _fmt(round(sum(amounts) / len(amounts), 2)),
+            ids,
+            f"round(sum({literal})/len({literal}), 2)",
+        )
+    )
+    out.append(
+        _build(
+            "agg-max-all",
+            f"订单 {listed} 中金额最大的是多少元？",
+            _fmt(round(max(amounts), 2)),
+            ids,
+            f"round(max({literal}), 2)",
+        )
+    )
+    out.append(
+        _build(
+            "agg-min-all",
+            f"订单 {listed} 中金额最小的是多少元？",
+            _fmt(round(min(amounts), 2)),
+            ids,
+            f"round(min({literal}), 2)",
+        )
+    )
+
+    threshold = 200
+    above = [a for a in amounts if a > threshold]
+    out.append(
+        _build(
+            f"agg-count-over-{threshold}",
+            f"订单 {listed} 中金额超过 {threshold} 元的有几个？",
+            str(len(above)),
+            ids,
+            f"len([x for x in {literal} if x > {threshold}])",
+        )
+    )
+
+    # The measured weak spot: summing a literal list works, but logic *over* the
+    # list (max, min, count, median, filtered sums) fails 3 times out of 3. These
+    # variants all need a comparison the model cannot read off the observations.
+    mean = sum(amounts) / len(amounts)
+    out.append(
+        _build(
+            "agg-count-over-mean",
+            f"订单 {listed} 中，金额高于平均值的有几个？",
+            str(len([a for a in amounts if a > mean])),
+            ids,
+            f"len([x for x in {literal} if x > sum({literal})/len({literal})])",
+        )
+    )
+    out.append(
+        _build(
+            "agg-max-minus-min",
+            f"订单 {listed} 中最大金额与最小金额相差多少元？",
+            _fmt(round(max(amounts) - min(amounts), 2)),
+            ids,
+            f"round(max({literal}) - min({literal}), 2)",
+        )
+    )
+    out.append(
+        _build(
+            "agg-sum-over-500",
+            f"订单 {listed} 中金额超过 500 元的那些订单，金额合计是多少元？",
+            _fmt(round(sum(a for a in amounts if a > 500), 2)),
+            ids,
+            f"round(sum([x for x in {literal} if x > 500]), 2)",
+        )
+    )
+    out.append(
+        _build(
+            "agg-median",
+            f"订单 {listed} 的金额中位数是多少元？（保留两位小数）",
+            _fmt(round(sorted(amounts)[len(amounts) // 2 - 1] if len(amounts) % 2 == 0 else sorted(amounts)[len(amounts) // 2], 2)),
+            ids,
+            f"round(median({literal}), 2)",
+        )
+    )
+    out.append(
+        _build(
+            "agg-sum-squares",
+            f"订单 {listed} 各自金额的平方和是多少？（保留两位小数）",
+            _fmt(round(sum(a * a for a in amounts), 2)),
+            ids,
+            f"round(sum([x*x for x in {literal}]), 2)",
+        )
+    )
     return out
 
 
