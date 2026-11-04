@@ -24,10 +24,19 @@ from arlab.tasks.stage_io import LoadedTask
 
 REQUIRED_KEYS = ("prompt", "data_source", "ability", "reward_model", "extra_info")
 
+#: Used with verl's tool_agent loop: verl injects the real tool schemas, so the
+#: prompt must not hand-write a tool list (that would fight the chat template).
+PLAIN_SYSTEM = (
+    "You are a tool-using agent. Call the provided tools when you need data, "
+    "then answer.\nWhen finished, reply with the final answer only."
+)
 
-def to_verl_record(loaded: LoadedTask, data_source: str = "arlab") -> dict[str, Any]:
+
+def to_verl_record(
+    loaded: LoadedTask, data_source: str = "arlab", system: str | None = None
+) -> dict[str, Any]:
     task = loaded.task
-    system = system_prompt(task.tools)
+    system = system or system_prompt(task.tools)
     return {
         "prompt": [
             {"role": "system", "content": system},

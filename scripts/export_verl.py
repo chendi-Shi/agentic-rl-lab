@@ -25,13 +25,33 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--data-source", default="arlab")
     parser.add_argument("--split", default=None)
+    parser.add_argument(
+        "--plain-system",
+        action="store_true",
+        help="short system prompt; use with verl's tool_agent, which injects the real tool schemas",
+    )
     args = parser.parse_args()
 
     loaded = load_tasks(args.tasks, split=args.split)
     if not loaded:
         raise SystemExit("no tasks matched")
 
-    count = export_jsonl(loaded, args.out, data_source=args.data_source)
+    if args.plain_system:
+        from arlab.train.export import PLAIN_SYSTEM
+
+        for item in loaded:
+            item.expected = dict(item.expected)
+        records = [to_verl_record(item, args.data_source, system=PLAIN_SYSTEM) for item in loaded]
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        with args.out.open("w", encoding="utf-8") as handle:
+            for record in records:
+                problems = validate_record(record)
+                if problems:
+                    raise SystemExit(f"{record['extra_info']['task_id']}: {problems}")
+                handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+        count = len(records)
+    else:
+        count = export_jsonl(loaded, args.out, data_source=args.data_source)
 
     first = json.loads(args.out.read_text(encoding="utf-8").splitlines()[0])
     problems = validate_record(first)
