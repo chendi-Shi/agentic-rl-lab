@@ -155,6 +155,27 @@ def strip_think(text: str) -> str:
     return "" if _THINK_OPEN.search(cleaned) else cleaned
 
 
+def _repair_missing_quote(candidate: str) -> dict[str, Any] | None:
+    """Re-insert the closing quote a model forgot before the final brace(s).
+
+    Observed with Qwen3-4B: ``{"tool": "python", "args": {"code": "x = 1}}`` --
+    the code string is never closed, so the braces land inside it. The intent is
+    unambiguous, so try the last few brace positions and accept the first repair
+    that parses *and* looks like an action.
+    """
+
+    positions = [i for i, ch in enumerate(candidate) if ch == "}"]
+    for index in positions[-3:]:
+        attempt = candidate[:index] + '"' + candidate[index:]
+        try:
+            payload = json.loads(attempt, strict=False)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and ({"tool", "name", "final_answer"} & set(payload)):
+            return payload
+    return None
+
+
 def parse_action(text: str) -> ToolCall | FinalAnswer:
     """Turn one model reply into an action. Never raises."""
 
@@ -174,7 +195,7 @@ def parse_action(text: str) -> ToolCall | FinalAnswer:
         # (code snippets), which is invalid JSON but unambiguous.
         payload = json.loads(candidate, strict=False)
     except json.JSONDecodeError:
-        return ToolCall(INVALID_TOOL, {"raw": raw})
+        payload = _repair_missing_quote(candidate)
 
     if not isinstance(payload, dict):
         return ToolCall(INVALID_TOOL, {"raw": raw})

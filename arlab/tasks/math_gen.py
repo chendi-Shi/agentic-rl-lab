@@ -52,56 +52,72 @@ def _easy(rng: random.Random) -> tuple[str, str]:
 
 
 def _medium(rng: random.Random) -> tuple[str, str]:
+    """Two-hop word problems: the model must derive a quantity, not copy an expression.
+
+    A single arithmetic prompt is solved by writing the expression straight down,
+    which a 4B model does reliably -- 48/48 at baseline, i.e. zero advantage for
+    GRPO. Requiring an intermediate quantity is what creates variance.
+    """
+
     kind = rng.randrange(3)
     if kind == 0:
-        price = rng.randrange(120, 960, 20)
+        price = rng.randrange(60, 300, 10)
+        count = rng.randint(3, 12)
         off = rng.choice([7.5, 8.0, 8.5, 9.0])
+        ship = rng.randint(5, 30)
         return (
-            f"商品原价 {price} 元，打 {off} 折，现价是多少元？",
-            f"{price}*{off}/10",
+            f"某商品单价 {price} 元，买 {count} 件，按总价 {off}/10 付款，另付运费 {ship} 元。"
+            f"实际支付多少元？",
+            f"round({price}*{count}*{off}/10 + {ship}, 2)",
         )
     if kind == 1:
-        nums = [rng.randint(10, 90) for _ in range(3)]
+        base = rng.randrange(200, 2000, 50)
+        first = rng.choice([5, 8, 10, 12, 15])
+        second = rng.choice([3, 6, 9, 11])
         return (
-            f"三个数 {nums[0]}、{nums[1]}、{nums[2]} 的平均值是多少？",
-            f"({nums[0]}+{nums[1]}+{nums[2]})/3",
+            f"某厂去年产量 {base} 件，今年比去年增长 {first}%，明年预计再增长 {second}%。"
+            f"明年产量预计多少件？（保留两位小数）",
+            f"round({base}*(1+{first}/100)*(1+{second}/100), 2)",
         )
-    a = rng.choice([3, 4, 5, 6])
-    factor = rng.randint(4, 12)
-    b = a * factor
-    c = rng.randint(7, 30)
+    distance = rng.randint(120, 900)
+    speed = rng.choice([40, 50, 60, 75, 80, 90])
+    rest = rng.choice([15, 20, 30, 45])
     return (
-        f"若 {a}:{b} = {c}:x，求 x 的值。",
-        f"{b}*{c}/{a}",
+        f"从甲地到乙地 {distance} 公里，车速 {speed} 公里/小时，途中休息 {rest} 分钟。"
+        f"总耗时多少小时？（保留两位小数）",
+        f"round({distance}/{speed} + {rest}/60, 2)",
     )
 
 
 def _hard(rng: random.Random) -> tuple[str, str]:
+    """Three-hop word problems: several intermediate quantities, no given formula."""
+
     kind = rng.randrange(3)
     if kind == 0:
-        # Build the equation from two integer roots, so the discriminant is always
-        # a non-negative perfect square (a random p, q pair can go complex).
-        r1 = rng.randint(1, 9)
-        r2 = rng.randint(2, 9)
-        if r1 == r2:
-            r2 += 1
-        p, q = r1 + r2, r1 * r2
+        a = rng.randrange(500, 5000, 100)
+        pct = rng.choice([10, 20, 25, 40, 50])
         return (
-            f"方程 x² - {p}x + {q} = 0 的较大根是多少？（保留两位小数）",
-            f"round(({p}+({p}**2-4*{q})**0.5)/2, 2)",
+            f"甲有 {a} 元，乙比甲多 {pct}%，丙是甲乙两人之和的一半。三人一共有多少元？"
+            f"（保留两位小数）",
+            f"round({a} + {a}*(1+{pct}/100) + ({a} + {a}*(1+{pct}/100))/2, 2)",
         )
     if kind == 1:
-        r = rng.randint(2, 15)
+        cost = rng.randrange(80, 900, 10)
+        markup = rng.choice([20, 30, 40, 50])
+        off = rng.choice([7.5, 8.0, 8.5, 9.0])
         return (
-            f"半径为 {r} 的圆面积是多少？（π 取 3.14，保留两位小数）",
-            f"round(3.14*{r}**2, 2)",
+            f"某商品成本 {cost} 元，加价 {markup}% 作为标价，再按标价的 {off}/10 售出。"
+            f"利润率是多少百分比？（保留两位小数）",
+            f"round((({cost}*(1+{markup}/100)*{off}/10) - {cost})/{cost}*100, 2)",
         )
-    principal = rng.randrange(1000, 9000, 500)
-    rate = rng.choice([3, 4, 5])
-    years = rng.randint(2, 4)
+    mass_a = rng.randint(10, 60)
+    mass_b = rng.randint(10, 60)
+    pct_a = rng.choice([5, 10, 15, 20])
+    pct_b = rng.choice([25, 30, 40, 50])
     return (
-        f"本金 {principal} 元，年利率 {rate}%，复利 {years} 年后本息合计多少？（保留两位小数）",
-        f"round({principal}*(1+{rate}/100)**{years}, 2)",
+        f"把 {mass_a} 千克浓度 {pct_a}% 的盐水和 {mass_b} 千克浓度 {pct_b}% 的盐水混合，"
+        f"混合后浓度是多少百分比？（保留两位小数）",
+        f"round(({mass_a}*{pct_a}/100 + {mass_b}*{pct_b}/100)/({mass_a}+{mass_b})*100, 2)",
     )
 
 

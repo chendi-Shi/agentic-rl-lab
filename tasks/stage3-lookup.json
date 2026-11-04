@@ -1,0 +1,2747 @@
+[
+  {
+    "task_id": "lk-disc-A123-75",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 的金额按 7.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "149.25"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0*7.5/10"
+          }
+        }
+      ],
+      "answer": "149.25"
+    }
+  },
+  {
+    "task_id": "lk-disc-A123-80",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 的金额按 8.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "159.2"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0*8.0/10"
+          }
+        }
+      ],
+      "answer": "159.2"
+    }
+  },
+  {
+    "task_id": "lk-disc-A123-85",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 的金额按 8.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "169.15"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0*8.5/10"
+          }
+        }
+      ],
+      "answer": "169.15"
+    }
+  },
+  {
+    "task_id": "lk-disc-A123-90",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 的金额按 9.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "179.1"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0*9.0/10"
+          }
+        }
+      ],
+      "answer": "179.1"
+    }
+  },
+  {
+    "task_id": "lk-third-A123",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 金额的三分之一是多少？（保留两位小数） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "66.33"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round(199.0/3, 2)"
+          }
+        }
+      ],
+      "answer": "66.33"
+    }
+  },
+  {
+    "task_id": "lk-disc-B456-75",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 的金额按 7.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "67.12"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5*7.5/10"
+          }
+        }
+      ],
+      "answer": "67.12"
+    }
+  },
+  {
+    "task_id": "lk-disc-B456-80",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 的金额按 8.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "71.6"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5*8.0/10"
+          }
+        }
+      ],
+      "answer": "71.6"
+    }
+  },
+  {
+    "task_id": "lk-disc-B456-85",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 的金额按 8.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "76.08"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5*8.5/10"
+          }
+        }
+      ],
+      "answer": "76.08"
+    }
+  },
+  {
+    "task_id": "lk-disc-B456-90",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 的金额按 9.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "80.55"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5*9.0/10"
+          }
+        }
+      ],
+      "answer": "80.55"
+    }
+  },
+  {
+    "task_id": "lk-third-B456",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 金额的三分之一是多少？（保留两位小数） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "29.83"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round(89.5/3, 2)"
+          }
+        }
+      ],
+      "answer": "29.83"
+    }
+  },
+  {
+    "task_id": "lk-disc-C789-75",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 的金额按 7.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "240"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0*7.5/10"
+          }
+        }
+      ],
+      "answer": "240"
+    }
+  },
+  {
+    "task_id": "lk-disc-C789-80",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 的金额按 8.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "256"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0*8.0/10"
+          }
+        }
+      ],
+      "answer": "256"
+    }
+  },
+  {
+    "task_id": "lk-disc-C789-85",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 的金额按 8.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "272"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0*8.5/10"
+          }
+        }
+      ],
+      "answer": "272"
+    }
+  },
+  {
+    "task_id": "lk-disc-C789-90",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 的金额按 9.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "288"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0*9.0/10"
+          }
+        }
+      ],
+      "answer": "288"
+    }
+  },
+  {
+    "task_id": "lk-third-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 金额的三分之一是多少？（保留两位小数） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "106.67"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round(320.0/3, 2)"
+          }
+        }
+      ],
+      "answer": "106.67"
+    }
+  },
+  {
+    "task_id": "lk-disc-D012-75",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 的金额按 7.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "903"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "1204.0*7.5/10"
+          }
+        }
+      ],
+      "answer": "903"
+    }
+  },
+  {
+    "task_id": "lk-disc-D012-80",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 的金额按 8.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "963.2"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "1204.0*8.0/10"
+          }
+        }
+      ],
+      "answer": "963.2"
+    }
+  },
+  {
+    "task_id": "lk-disc-D012-85",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 的金额按 8.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1023.4"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "1204.0*8.5/10"
+          }
+        }
+      ],
+      "answer": "1023.4"
+    }
+  },
+  {
+    "task_id": "lk-disc-D012-90",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 的金额按 9.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1083.6"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "1204.0*9.0/10"
+          }
+        }
+      ],
+      "answer": "1083.6"
+    }
+  },
+  {
+    "task_id": "lk-third-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 金额的三分之一是多少？（保留两位小数） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "401.33"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round(1204.0/3, 2)"
+          }
+        }
+      ],
+      "answer": "401.33"
+    }
+  },
+  {
+    "task_id": "lk-disc-E345-75",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 的金额按 7.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "58.69"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "78.25*7.5/10"
+          }
+        }
+      ],
+      "answer": "58.69"
+    }
+  },
+  {
+    "task_id": "lk-disc-E345-80",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 的金额按 8.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "62.6"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "78.25*8.0/10"
+          }
+        }
+      ],
+      "answer": "62.6"
+    }
+  },
+  {
+    "task_id": "lk-disc-E345-85",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 的金额按 8.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "66.51"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "78.25*8.5/10"
+          }
+        }
+      ],
+      "answer": "66.51"
+    }
+  },
+  {
+    "task_id": "lk-disc-E345-90",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 的金额按 9.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "70.42"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "78.25*9.0/10"
+          }
+        }
+      ],
+      "answer": "70.42"
+    }
+  },
+  {
+    "task_id": "lk-third-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 金额的三分之一是多少？（保留两位小数） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "26.08"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round(78.25/3, 2)"
+          }
+        }
+      ],
+      "answer": "26.08"
+    }
+  },
+  {
+    "task_id": "lk-disc-F678-75",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 F678 的金额按 7.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1837.88"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "2450.5*7.5/10"
+          }
+        }
+      ],
+      "answer": "1837.88"
+    }
+  },
+  {
+    "task_id": "lk-disc-F678-80",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 F678 的金额按 8.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1960.4"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "2450.5*8.0/10"
+          }
+        }
+      ],
+      "answer": "1960.4"
+    }
+  },
+  {
+    "task_id": "lk-disc-F678-85",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 F678 的金额按 8.5/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2082.93"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "2450.5*8.5/10"
+          }
+        }
+      ],
+      "answer": "2082.93"
+    }
+  },
+  {
+    "task_id": "lk-disc-F678-90",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 F678 的金额按 9.0/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2205.45"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "2450.5*9.0/10"
+          }
+        }
+      ],
+      "answer": "2205.45"
+    }
+  },
+  {
+    "task_id": "lk-third-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 F678 金额的三分之一是多少？（保留两位小数） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "816.83"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round(2450.5/3, 2)"
+          }
+        }
+      ],
+      "answer": "816.83"
+    }
+  },
+  {
+    "task_id": "lk-sum-A123-B456",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 B456 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "288.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0+89.5"
+          }
+        }
+      ],
+      "answer": "288.5"
+    }
+  },
+  {
+    "task_id": "lk-diff-A123-B456",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 比订单 B456 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "109.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(199.0-89.5)"
+          }
+        }
+      ],
+      "answer": "109.5"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-A123-B456",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 B456 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "259.65"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((199.0+89.5)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "259.65"
+    }
+  },
+  {
+    "task_id": "lk-sum-A123-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 C789 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "519"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0+320.0"
+          }
+        }
+      ],
+      "answer": "519"
+    }
+  },
+  {
+    "task_id": "lk-diff-A123-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 比订单 C789 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "121"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(199.0-320.0)"
+          }
+        }
+      ],
+      "answer": "121"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-A123-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 C789 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "467.1"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((199.0+320.0)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "467.1"
+    }
+  },
+  {
+    "task_id": "lk-sum-A123-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 D012 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1403"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0+1204.0"
+          }
+        }
+      ],
+      "answer": "1403"
+    }
+  },
+  {
+    "task_id": "lk-diff-A123-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 比订单 D012 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1005"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(199.0-1204.0)"
+          }
+        }
+      ],
+      "answer": "1005"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-A123-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 D012 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1262.7"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((199.0+1204.0)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "1262.7"
+    }
+  },
+  {
+    "task_id": "lk-sum-A123-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 E345 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "277.25"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0+78.25"
+          }
+        }
+      ],
+      "answer": "277.25"
+    }
+  },
+  {
+    "task_id": "lk-diff-A123-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 比订单 E345 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "120.75"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(199.0-78.25)"
+          }
+        }
+      ],
+      "answer": "120.75"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-A123-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 E345 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "249.53"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((199.0+78.25)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "249.53"
+    }
+  },
+  {
+    "task_id": "lk-sum-A123-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 F678 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2649.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "199.0+2450.5"
+          }
+        }
+      ],
+      "answer": "2649.5"
+    }
+  },
+  {
+    "task_id": "lk-diff-A123-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 比订单 F678 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2251.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(199.0-2450.5)"
+          }
+        }
+      ],
+      "answer": "2251.5"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-A123-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 A123 和订单 F678 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2384.55"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "A123"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((199.0+2450.5)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "2384.55"
+    }
+  },
+  {
+    "task_id": "lk-sum-B456-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 C789 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "409.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5+320.0"
+          }
+        }
+      ],
+      "answer": "409.5"
+    }
+  },
+  {
+    "task_id": "lk-diff-B456-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 比订单 C789 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "230.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(89.5-320.0)"
+          }
+        }
+      ],
+      "answer": "230.5"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-B456-C789",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 C789 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "368.55"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((89.5+320.0)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "368.55"
+    }
+  },
+  {
+    "task_id": "lk-sum-B456-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 D012 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1293.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5+1204.0"
+          }
+        }
+      ],
+      "answer": "1293.5"
+    }
+  },
+  {
+    "task_id": "lk-diff-B456-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 比订单 D012 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1114.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(89.5-1204.0)"
+          }
+        }
+      ],
+      "answer": "1114.5"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-B456-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 D012 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1164.15"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((89.5+1204.0)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "1164.15"
+    }
+  },
+  {
+    "task_id": "lk-sum-B456-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 E345 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "167.75"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5+78.25"
+          }
+        }
+      ],
+      "answer": "167.75"
+    }
+  },
+  {
+    "task_id": "lk-diff-B456-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 比订单 E345 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "11.25"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(89.5-78.25)"
+          }
+        }
+      ],
+      "answer": "11.25"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-B456-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 E345 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "150.97"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((89.5+78.25)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "150.97"
+    }
+  },
+  {
+    "task_id": "lk-sum-B456-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 F678 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2540"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "89.5+2450.5"
+          }
+        }
+      ],
+      "answer": "2540"
+    }
+  },
+  {
+    "task_id": "lk-diff-B456-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 比订单 F678 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2361"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(89.5-2450.5)"
+          }
+        }
+      ],
+      "answer": "2361"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-B456-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 B456 和订单 F678 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2286"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "B456"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((89.5+2450.5)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "2286"
+    }
+  },
+  {
+    "task_id": "lk-sum-C789-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 和订单 D012 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1524"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0+1204.0"
+          }
+        }
+      ],
+      "answer": "1524"
+    }
+  },
+  {
+    "task_id": "lk-diff-C789-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 比订单 D012 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "884"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(320.0-1204.0)"
+          }
+        }
+      ],
+      "answer": "884"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-C789-D012",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 和订单 D012 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1371.6"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((320.0+1204.0)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "1371.6"
+    }
+  },
+  {
+    "task_id": "lk-sum-C789-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 和订单 E345 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "398.25"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0+78.25"
+          }
+        }
+      ],
+      "answer": "398.25"
+    }
+  },
+  {
+    "task_id": "lk-diff-C789-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 比订单 E345 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "241.75"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(320.0-78.25)"
+          }
+        }
+      ],
+      "answer": "241.75"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-C789-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 和订单 E345 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "358.43"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((320.0+78.25)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "358.43"
+    }
+  },
+  {
+    "task_id": "lk-sum-C789-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 和订单 F678 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2770.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "320.0+2450.5"
+          }
+        }
+      ],
+      "answer": "2770.5"
+    }
+  },
+  {
+    "task_id": "lk-diff-C789-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 比订单 F678 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2130.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(320.0-2450.5)"
+          }
+        }
+      ],
+      "answer": "2130.5"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-C789-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 C789 和订单 F678 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2493.45"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "C789"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((320.0+2450.5)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "2493.45"
+    }
+  },
+  {
+    "task_id": "lk-sum-D012-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 和订单 E345 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1282.25"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "1204.0+78.25"
+          }
+        }
+      ],
+      "answer": "1282.25"
+    }
+  },
+  {
+    "task_id": "lk-diff-D012-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 比订单 E345 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1125.75"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(1204.0-78.25)"
+          }
+        }
+      ],
+      "answer": "1125.75"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-D012-E345",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 和订单 E345 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1154.03"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((1204.0+78.25)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "1154.03"
+    }
+  },
+  {
+    "task_id": "lk-sum-D012-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 和订单 F678 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "3654.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "1204.0+2450.5"
+          }
+        }
+      ],
+      "answer": "3654.5"
+    }
+  },
+  {
+    "task_id": "lk-diff-D012-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 比订单 F678 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "1246.5"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(1204.0-2450.5)"
+          }
+        }
+      ],
+      "answer": "1246.5"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-D012-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 D012 和订单 F678 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "3289.05"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "D012"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((1204.0+2450.5)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "3289.05"
+    }
+  },
+  {
+    "task_id": "lk-sum-E345-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 和订单 F678 的金额合计多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2528.75"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "78.25+2450.5"
+          }
+        }
+      ],
+      "answer": "2528.75"
+    }
+  },
+  {
+    "task_id": "lk-diff-E345-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 比订单 F678 贵多少元？（用较大减较小） 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2372.25"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "abs(78.25-2450.5)"
+          }
+        }
+      ],
+      "answer": "2372.25"
+    }
+  },
+  {
+    "task_id": "lk-sumdisc-E345-F678",
+    "split": "dev",
+    "family": "lookup",
+    "instruction": "订单 E345 和订单 F678 的金额合计，再按 9/10 付款，应付多少元？ 先用 orders.get 查金额，再用 calc 计算，最后提交答案（只填数字）。",
+    "expected": {
+      "answer": "2275.88"
+    },
+    "tools": [
+      "orders.get",
+      "calc",
+      "orders.refund",
+      "shipping.track"
+    ],
+    "max_steps": 8,
+    "meta": {
+      "plan": [
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "E345"
+          }
+        },
+        {
+          "tool": "orders.get",
+          "args": {
+            "order_id": "F678"
+          }
+        },
+        {
+          "tool": "calc",
+          "args": {
+            "expression": "round((78.25+2450.5)*0.9, 2)"
+          }
+        }
+      ],
+      "answer": "2275.88"
+    }
+  }
+]

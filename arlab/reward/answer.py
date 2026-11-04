@@ -45,13 +45,16 @@ def answers_match(predicted: str | None, expected: str, numeric: bool = True) ->
         return False
     if normalize(predicted) == normalize(expected):
         return True
-    # "400" vs "400.0": only compare as numbers when both sides are numeric.
+    # "400" vs "400.0", and "32.67" vs "32.666666666666664": a human (and a model)
+    # rounds, so compare with a small relative tolerance instead of exact bits.
     p_num, e_num = extract_number(predicted or ""), extract_number(expected or "")
     if numeric and p_num is not None and e_num is not None:
         try:
-            return abs(float(p_num) - float(e_num)) <= 1e-6
+            want = float(e_num)
+            got = float(p_num)
         except ValueError:
             return False
+        return abs(got - want) <= max(1e-6, abs(want) * 1e-3)
     return False
 
 

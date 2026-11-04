@@ -16,6 +16,8 @@ Two executors are provided:
 from __future__ import annotations
 
 import ast
+import math
+import re
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -42,6 +44,12 @@ _ALLOWED_CALLS = {
     "float": float,
     "str": str,
     "range": range,
+    # math helpers, injected so `import math` is never needed
+    "sqrt": math.sqrt,
+    "floor": math.floor,
+    "ceil": math.ceil,
+    "log": math.log,
+    "exp": math.exp,
     "print": lambda *args: " ".join(str(a) for a in args),
 }
 _FORBIDDEN = (ast.Attribute, ast.Subscript, ast.Lambda, ast.Import, ast.ImportFrom)
@@ -51,6 +59,20 @@ class ArithmeticExecutor:
     """Runs one expression, or a short block of statements, with no I/O."""
 
     max_code_chars = 2000
+    _IMPORT_MATH = re.compile(r"^\s*(?:import\s+math|from\s+math\s+import\s+[^\n]*?)\s*$", re.MULTILINE)
+    _MATH_ATTR = re.compile(r"\bmath\.([A-Za-z_]\w*)")
+
+    def _preprocess(self, code: str) -> str:
+        """Let ``import math`` and ``math.sqrt(...)`` through.
+
+        Attribute access is forbidden because it is the classic sandbox escape,
+        but models reach for ``math.sqrt`` constantly. Dropping the import and
+        rewriting the call onto the injected helper is better than failing the
+        whole answer -- which is exactly what happened on the hard tier.
+        """
+
+        code = self._IMPORT_MATH.sub("", code)
+        return self._MATH_ATTR.sub(r"\1", code)
 
     def run(self, code: str) -> str:
         code = (code or "").strip()
@@ -58,6 +80,9 @@ class ArithmeticExecutor:
             raise ValueError("empty code")
         if len(code) > self.max_code_chars:
             raise ValueError("code too long")
+        code = self._preprocess(code)
+        if not code.strip():
+            raise ValueError("empty code after preprocessing")
 
         # Models write both `17*23+9` and `x = 17*23+9 \\n print(x)`. Accept a
         # module, run the body, and return the last expression's value or
@@ -69,7 +94,7 @@ class ArithmeticExecutor:
             tree = ast.parse(code, mode="eval")
 
         self._validate(tree)
-        namespace = {"__builtins__": {}}
+        namespace = {"__builtins__": {}, "pi": math.pi, "e": math.e}
         namespace.update(_ALLOWED_CALLS)
 
         printed: list[str] = []

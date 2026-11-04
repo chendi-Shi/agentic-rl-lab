@@ -160,6 +160,29 @@ def test_real_newline_inside_json_string_still_parses():
     assert "print(result)" in action.args["code"]
 
 
+def test_missing_closing_quote_is_repaired():
+    """Observed from Qwen3-4B: the code string is never closed, so braces land in it."""
+    text = '{"tool": "python", "args": {"code": "result = 15**2 - 7\nprint(result)}}'
+    action = parse_action(text)
+
+    assert isinstance(action, ToolCall)
+    assert action.name == "python"
+    assert "print(result)" in action.args["code"]
+
+
+def test_missing_quote_before_final_answer_is_repaired():
+    action = parse_action('{"final_answer": "218}')
+
+    assert isinstance(action, FinalAnswer)
+    assert action.text == "218"
+
+
+def test_repair_does_not_invent_actions_from_garbage():
+    for junk in ("{definitely not json}", '{"foo": "bar"}', ""):
+        action = parse_action(junk)
+        assert action.name == INVALID_TOOL
+
+
 def test_strip_think_is_exported():
     from arlab.policy import strip_think
 

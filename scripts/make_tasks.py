@@ -106,9 +106,18 @@ def stage1_generated(out: Path, per_tier: int, seed: int = 0) -> int:
     return count
 
 
+def stage3_lookup(out: Path) -> int:
+    """Tasks whose numbers live behind a tool call, not in the prompt."""
+
+    from arlab.tasks.lookup_tasks import as_dump
+
+    tasks, expected, meta = as_dump()
+    return dump_tasks(out, tasks, expected, meta=meta)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", type=int, choices=[1, 2], required=True)
+    parser.add_argument("--stage", type=int, choices=[1, 2, 3], required=True)
     parser.add_argument("--out", type=Path)
     parser.add_argument("--generated", type=int, default=0, help="tasks per difficulty tier (stage 1)")
     parser.add_argument("--seed", type=int, default=0)
@@ -126,6 +135,9 @@ def main() -> int:
         else:
             out = args.out or Path("tasks/stage1.json")
             n = stage1(out)
+    elif args.stage == 3:
+        out = args.out or Path("tasks/stage3-lookup.json")
+        n = stage3_lookup(out)
     else:
         out = args.out or Path("tasks/stage2.json")
         n = stage2(out, args.services)

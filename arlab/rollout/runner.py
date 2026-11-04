@@ -1,4 +1,4 @@
-﻿"""Rollout loop: policy -> environment -> verifiable reward -> durable trace.
+"""Rollout loop: policy -> environment -> verifiable reward -> durable trace.
 
 Framework-agnostic on purpose. Whether the policy is a scripted baseline, an
 OpenAI-compatible vLLM endpoint, or a verl rollout worker, the loop, the budget

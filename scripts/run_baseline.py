@@ -59,6 +59,11 @@ def make_env_factory(loaded: list[LoadedTask], env_kind: str, mcp_command: str):
 
         return MathEnv, "answer"
 
+    if env_kind == "lookup" or family == "lookup":
+        from arlab.tasks.lookup_tasks import LookupEnv
+
+        return LookupEnv, "answer"
+
     if env_kind == "business":
         from arlab.tasks.env import SyntheticBusinessEnv
 
@@ -94,6 +99,12 @@ def main() -> int:
     parser.add_argument("--model", default="qwen3-8b")
     parser.add_argument("--max-tokens", type=int, default=512)
     parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        help="sampling temperature; GRPO rollouts need > 0 or every sample is identical",
+    )
+    parser.add_argument(
         "--no-think",
         action="store_true",
         help="disable reasoning models' thinking block (Qwen3: enable_thinking=false)",
@@ -122,11 +133,11 @@ def main() -> int:
         policy = scripted_policy_for
         policy_name = "scripted"
     else:
-        extra = (
-            {"chat_template_kwargs": {"enable_thinking": False}} if args.no_think else None
-        )
+        extra = {"seed": args.seed}
+        if args.no_think:
+            extra["chat_template_kwargs"] = {"enable_thinking": False}
         client = ChatClient(base_url=args.base_url, model=args.model, extra_body=extra)
-        llm = LLMPolicy(client, max_tokens=args.max_tokens)
+        llm = LLMPolicy(client, max_tokens=args.max_tokens, temperature=args.temperature)
         policy_name = f"llm:{args.model}"
 
         def policy(task, steps):  # noqa: ANN001 - thin wrapper to record token usage

@@ -1,4 +1,4 @@
-﻿"""Partial rollout executor: keep unfinished episodes across training rounds.
+"""Partial rollout executor: keep unfinished episodes across training rounds.
 
 A training round has a fixed step budget. Two ways to handle an episode that is
 longer than the budget:

@@ -275,9 +275,9 @@
     "task_id": "gen-medium-01",
     "split": "dev",
     "family": "math",
-    "instruction": "若 5:50 = 24:x，求 x 的值。 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 782 公里，车速 60 公里/小时，途中休息 45 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "240.0"
+      "answer": "13.78"
     },
     "tools": [
       "python"
@@ -285,16 +285,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "50*24/5"
+      "code": "round(782/60 + 45/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-02",
     "split": "dev",
     "family": "math",
-    "instruction": "若 4:36 = 13:x，求 x 的值。 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 705 公里，车速 80 公里/小时，途中休息 20 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "117.0"
+      "answer": "9.15"
     },
     "tools": [
       "python"
@@ -302,16 +302,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "36*13/4"
+      "code": "round(705/80 + 20/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-03",
     "split": "dev",
     "family": "math",
-    "instruction": "商品原价 660 元，打 8.0 折，现价是多少元？ 用 python 算，然后提交答案。",
+    "instruction": "某厂去年产量 800 件，今年比去年增长 5%，明年预计再增长 11%。明年产量预计多少件？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "528.0"
+      "answer": "932.4"
     },
     "tools": [
       "python"
@@ -319,16 +319,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "660*8.0/10"
+      "code": "round(800*(1+5/100)*(1+11/100), 2)"
     }
   },
   {
     "task_id": "gen-medium-04",
     "split": "dev",
     "family": "math",
-    "instruction": "三个数 17、82、57 的平均值是多少？ 用 python 算，然后提交答案。",
+    "instruction": "某商品单价 140 元，买 3 件，按总价 8.5/10 付款，另付运费 10 元。实际支付多少元？ 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "52.0"
+      "answer": "367.0"
     },
     "tools": [
       "python"
@@ -336,16 +336,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "(17+82+57)/3"
+      "code": "round(140*3*8.5/10 + 10, 2)"
     }
   },
   {
     "task_id": "gen-medium-05",
     "split": "dev",
     "family": "math",
-    "instruction": "商品原价 900 元，打 7.5 折，现价是多少元？ 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 237 公里，车速 40 公里/小时，途中休息 45 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "675.0"
+      "answer": "6.67"
     },
     "tools": [
       "python"
@@ -353,16 +353,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "900*7.5/10"
+      "code": "round(237/40 + 45/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-06",
     "split": "dev",
     "family": "math",
-    "instruction": "商品原价 660 元，打 9.0 折，现价是多少元？ 用 python 算，然后提交答案。",
+    "instruction": "某厂去年产量 1200 件，今年比去年增长 12%，明年预计再增长 11%。明年产量预计多少件？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "594.0"
+      "answer": "1491.84"
     },
     "tools": [
       "python"
@@ -370,16 +370,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "660*9.0/10"
+      "code": "round(1200*(1+12/100)*(1+11/100), 2)"
     }
   },
   {
     "task_id": "gen-medium-07",
     "split": "dev",
     "family": "math",
-    "instruction": "若 5:55 = 28:x，求 x 的值。 用 python 算，然后提交答案。",
+    "instruction": "某厂去年产量 1000 件，今年比去年增长 5%，明年预计再增长 6%。明年产量预计多少件？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "308.0"
+      "answer": "1113.0"
     },
     "tools": [
       "python"
@@ -387,16 +387,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "55*28/5"
+      "code": "round(1000*(1+5/100)*(1+6/100), 2)"
     }
   },
   {
     "task_id": "gen-medium-08",
     "split": "dev",
     "family": "math",
-    "instruction": "三个数 53、43、18 的平均值是多少？ 用 python 算，然后提交答案。",
+    "instruction": "某商品单价 180 元，买 8 件，按总价 8.0/10 付款，另付运费 14 元。实际支付多少元？ 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "38.0"
+      "answer": "1166.0"
     },
     "tools": [
       "python"
@@ -404,16 +404,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "(53+43+18)/3"
+      "code": "round(180*8*8.0/10 + 14, 2)"
     }
   },
   {
     "task_id": "gen-medium-09",
     "split": "dev",
     "family": "math",
-    "instruction": "商品原价 380 元，打 9.0 折，现价是多少元？ 用 python 算，然后提交答案。",
+    "instruction": "某商品单价 90 元，买 9 件，按总价 9.0/10 付款，另付运费 7 元。实际支付多少元？ 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "342.0"
+      "answer": "736.0"
     },
     "tools": [
       "python"
@@ -421,16 +421,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "380*9.0/10"
+      "code": "round(90*9*9.0/10 + 7, 2)"
     }
   },
   {
     "task_id": "gen-medium-10",
     "split": "dev",
     "family": "math",
-    "instruction": "若 5:30 = 16:x，求 x 的值。 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 125 公里，车速 75 公里/小时，途中休息 20 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "96.0"
+      "answer": "2.0"
     },
     "tools": [
       "python"
@@ -438,16 +438,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "30*16/5"
+      "code": "round(125/75 + 20/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-11",
     "split": "dev",
     "family": "math",
-    "instruction": "商品原价 260 元，打 9.0 折，现价是多少元？ 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 636 公里，车速 80 公里/小时，途中休息 15 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "234.0"
+      "answer": "8.2"
     },
     "tools": [
       "python"
@@ -455,16 +455,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "260*9.0/10"
+      "code": "round(636/80 + 15/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-12",
     "split": "dev",
     "family": "math",
-    "instruction": "三个数 21、10、67 的平均值是多少？ 用 python 算，然后提交答案。",
+    "instruction": "某商品单价 290 元，买 9 件，按总价 8.5/10 付款，另付运费 6 元。实际支付多少元？ 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "32.666666666666664"
+      "answer": "2224.5"
     },
     "tools": [
       "python"
@@ -472,16 +472,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "(21+10+67)/3"
+      "code": "round(290*9*8.5/10 + 6, 2)"
     }
   },
   {
     "task_id": "gen-medium-13",
     "split": "dev",
     "family": "math",
-    "instruction": "若 4:48 = 23:x，求 x 的值。 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 528 公里，车速 80 公里/小时，途中休息 20 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "276.0"
+      "answer": "6.93"
     },
     "tools": [
       "python"
@@ -489,16 +489,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "48*23/4"
+      "code": "round(528/80 + 20/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-14",
     "split": "dev",
     "family": "math",
-    "instruction": "若 3:18 = 30:x，求 x 的值。 用 python 算，然后提交答案。",
+    "instruction": "从甲地到乙地 155 公里，车速 50 公里/小时，途中休息 15 分钟。总耗时多少小时？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "180.0"
+      "answer": "3.35"
     },
     "tools": [
       "python"
@@ -506,16 +506,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "18*30/3"
+      "code": "round(155/50 + 15/60, 2)"
     }
   },
   {
     "task_id": "gen-medium-15",
     "split": "dev",
     "family": "math",
-    "instruction": "三个数 50、15、83 的平均值是多少？ 用 python 算，然后提交答案。",
+    "instruction": "某商品单价 140 元，买 3 件，按总价 8.0/10 付款，另付运费 13 元。实际支付多少元？ 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "49.333333333333336"
+      "answer": "349.0"
     },
     "tools": [
       "python"
@@ -523,16 +523,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "(50+15+83)/3"
+      "code": "round(140*3*8.0/10 + 13, 2)"
     }
   },
   {
     "task_id": "gen-medium-16",
     "split": "dev",
     "family": "math",
-    "instruction": "三个数 74、38、14 的平均值是多少？ 用 python 算，然后提交答案。",
+    "instruction": "某厂去年产量 250 件，今年比去年增长 10%，明年预计再增长 6%。明年产量预计多少件？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "42.0"
+      "answer": "291.5"
     },
     "tools": [
       "python"
@@ -540,16 +540,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "medium",
-      "code": "(74+38+14)/3"
+      "code": "round(250*(1+10/100)*(1+6/100), 2)"
     }
   },
   {
     "task_id": "gen-hard-01",
     "split": "dev",
     "family": "math",
-    "instruction": "方程 x² - 11x + 30 = 0 的较大根是多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 2200 元，乙比甲多 50%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "6.0"
+      "answer": "8250.0"
     },
     "tools": [
       "python"
@@ -557,16 +557,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round((11+(11**2-4*30)**0.5)/2, 2)"
+      "code": "round(2200 + 2200*(1+50/100) + (2200 + 2200*(1+50/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-02",
     "split": "dev",
     "family": "math",
-    "instruction": "本金 8000 元，年利率 4%，复利 2 年后本息合计多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "某商品成本 760 元，加价 50% 作为标价，再按标价的 9.0/10 售出。利润率是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "8652.8"
+      "answer": "35.0"
     },
     "tools": [
       "python"
@@ -574,16 +574,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(8000*(1+4/100)**2, 2)"
+      "code": "round(((760*(1+50/100)*9.0/10) - 760)/760*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-03",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 8 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 3300 元，乙比甲多 40%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "200.96"
+      "answer": "11880.0"
     },
     "tools": [
       "python"
@@ -591,16 +591,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*8**2, 2)"
+      "code": "round(3300 + 3300*(1+40/100) + (3300 + 3300*(1+40/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-04",
     "split": "dev",
     "family": "math",
-    "instruction": "方程 x² - 13x + 42 = 0 的较大根是多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 2800 元，乙比甲多 50%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "7.0"
+      "answer": "10500.0"
     },
     "tools": [
       "python"
@@ -608,16 +608,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round((13+(13**2-4*42)**0.5)/2, 2)"
+      "code": "round(2800 + 2800*(1+50/100) + (2800 + 2800*(1+50/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-05",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 13 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "某商品成本 580 元，加价 30% 作为标价，再按标价的 8.5/10 售出。利润率是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "530.66"
+      "answer": "10.5"
     },
     "tools": [
       "python"
@@ -625,16 +625,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*13**2, 2)"
+      "code": "round(((580*(1+30/100)*8.5/10) - 580)/580*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-06",
     "split": "dev",
     "family": "math",
-    "instruction": "方程 x² - 15x + 54 = 0 的较大根是多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 1000 元，乙比甲多 40%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "9.0"
+      "answer": "3600.0"
     },
     "tools": [
       "python"
@@ -642,16 +642,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round((15+(15**2-4*54)**0.5)/2, 2)"
+      "code": "round(1000 + 1000*(1+40/100) + (1000 + 1000*(1+40/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-07",
     "split": "dev",
     "family": "math",
-    "instruction": "方程 x² - 10x + 16 = 0 的较大根是多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 3500 元，乙比甲多 40%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "8.0"
+      "answer": "12600.0"
     },
     "tools": [
       "python"
@@ -659,16 +659,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round((10+(10**2-4*16)**0.5)/2, 2)"
+      "code": "round(3500 + 3500*(1+40/100) + (3500 + 3500*(1+40/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-08",
     "split": "dev",
     "family": "math",
-    "instruction": "方程 x² - 17x + 72 = 0 的较大根是多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "把 27 千克浓度 15% 的盐水和 49 千克浓度 25% 的盐水混合，混合后浓度是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "9.0"
+      "answer": "21.45"
     },
     "tools": [
       "python"
@@ -676,16 +676,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round((17+(17**2-4*72)**0.5)/2, 2)"
+      "code": "round((27*15/100 + 49*25/100)/(27+49)*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-09",
     "split": "dev",
     "family": "math",
-    "instruction": "本金 5000 元，年利率 5%，复利 4 年后本息合计多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "某商品成本 540 元，加价 30% 作为标价，再按标价的 8.0/10 售出。利润率是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "6077.53"
+      "answer": "4.0"
     },
     "tools": [
       "python"
@@ -693,16 +693,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(5000*(1+5/100)**4, 2)"
+      "code": "round(((540*(1+30/100)*8.0/10) - 540)/540*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-10",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 2 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "把 49 千克浓度 20% 的盐水和 36 千克浓度 40% 的盐水混合，混合后浓度是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "12.56"
+      "answer": "28.47"
     },
     "tools": [
       "python"
@@ -710,16 +710,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*2**2, 2)"
+      "code": "round((49*20/100 + 36*40/100)/(49+36)*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-11",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 15 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 2000 元，乙比甲多 20%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "706.5"
+      "answer": "6600.0"
     },
     "tools": [
       "python"
@@ -727,16 +727,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*15**2, 2)"
+      "code": "round(2000 + 2000*(1+20/100) + (2000 + 2000*(1+20/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-12",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 5 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "把 26 千克浓度 20% 的盐水和 11 千克浓度 40% 的盐水混合，混合后浓度是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "78.5"
+      "answer": "25.95"
     },
     "tools": [
       "python"
@@ -744,16 +744,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*5**2, 2)"
+      "code": "round((26*20/100 + 11*40/100)/(26+11)*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-13",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 7 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 2300 元，乙比甲多 40%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "153.86"
+      "answer": "8280.0"
     },
     "tools": [
       "python"
@@ -761,16 +761,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*7**2, 2)"
+      "code": "round(2300 + 2300*(1+40/100) + (2300 + 2300*(1+40/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-14",
     "split": "dev",
     "family": "math",
-    "instruction": "方程 x² - 9x + 20 = 0 的较大根是多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "甲有 3900 元，乙比甲多 20%，丙是甲乙两人之和的一半。三人一共有多少元？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "5.0"
+      "answer": "12870.0"
     },
     "tools": [
       "python"
@@ -778,16 +778,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round((9+(9**2-4*20)**0.5)/2, 2)"
+      "code": "round(3900 + 3900*(1+20/100) + (3900 + 3900*(1+20/100))/2, 2)"
     }
   },
   {
     "task_id": "gen-hard-15",
     "split": "dev",
     "family": "math",
-    "instruction": "本金 5000 元，年利率 3%，复利 4 年后本息合计多少？（保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "把 26 千克浓度 20% 的盐水和 49 千克浓度 25% 的盐水混合，混合后浓度是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "5627.54"
+      "answer": "23.27"
     },
     "tools": [
       "python"
@@ -795,16 +795,16 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(5000*(1+3/100)**4, 2)"
+      "code": "round((26*20/100 + 49*25/100)/(26+49)*100, 2)"
     }
   },
   {
     "task_id": "gen-hard-16",
     "split": "dev",
     "family": "math",
-    "instruction": "半径为 6 的圆面积是多少？（π 取 3.14，保留两位小数） 用 python 算，然后提交答案。",
+    "instruction": "把 14 千克浓度 5% 的盐水和 12 千克浓度 40% 的盐水混合，混合后浓度是多少百分比？（保留两位小数） 用 python 算，然后提交答案。",
     "expected": {
-      "answer": "113.04"
+      "answer": "21.15"
     },
     "tools": [
       "python"
@@ -812,7 +812,7 @@
     "max_steps": 6,
     "meta": {
       "tier": "hard",
-      "code": "round(3.14*6**2, 2)"
+      "code": "round((14*5/100 + 12*40/100)/(14+12)*100, 2)"
     }
   }
 ]

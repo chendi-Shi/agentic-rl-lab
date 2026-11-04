@@ -1,4 +1,4 @@
-﻿"""Scripted reference policies for the built-in task sets.
+"""Scripted reference policies for the built-in task sets.
 
 **These are not baselines.** They replay the correct actions and therefore score
 near-perfect on both task families. Their only job is to prove that a task set,
