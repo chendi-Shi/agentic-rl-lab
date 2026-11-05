@@ -25,7 +25,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from arlab.policy.openai import ChatClient, LLMPolicy, system_prompt
-from arlab.rollout.concurrent import collect_records
+from arlab.rollout.deadline import collect_with_deadline
 from arlab.rollout.runner import RunnerConfig, run_task
 from arlab.store import TraceStore
 from arlab.tasks.lookup_tasks import LookupEnv
@@ -49,7 +49,8 @@ def collect_group(
     store: TraceStore,
     group_size: int,
     workers: int = 8,
-) -> tuple[list[Episode], list[float]]:
+    deadline_s: float | None = None,
+) -> tuple[list[Episode], list[float], object]:
     episodes: list[Episode] = []
     rewards: list[float] = []
     system = system_prompt(task.tools)
@@ -59,13 +60,14 @@ def collect_group(
     # for-loop and 6.1s issued together, same rewards (scripts/bench_rollout.py).
     # Each rollout still gets its own sampling seed, because a shared seed made
     # all eight samples byte-identical even at temperature 0.9.
-    records = collect_records(
+    records, roll_stats = collect_with_deadline(
         task,
         env_cls,
         policy_factory,
         cfg,
         group_size=group_size,
         workers=workers,
+        deadline_s=deadline_s,
     )
     for record in records:
         record = as_dict(record)
@@ -78,7 +80,7 @@ def collect_group(
             )
         )
         rewards.append(float(record["reward"]["r_task"]))
-    return episodes, rewards
+    return episodes, rewards, roll_stats
 
 
 def main() -> int:
@@ -90,6 +92,12 @@ def main() -> int:
     parser.add_argument("--steps", type=int, default=12)
     parser.add_argument("--group-size", type=int, default=4)
     parser.add_argument("--workers", type=int, default=8, help="concurrent rollouts; 1 = sequential")
+    parser.add_argument(
+        "--deadline",
+        type=float,
+        default=0.0,
+        help="per-episode wall-clock budget; 0 disables partial rollout",
+    )
     parser.add_argument("--lr", type=float, default=1e-6)
     parser.add_argument("--kl-coef", type=float, default=0.001)
     parser.add_argument("--lora-dropout", type=float, default=0.05)
@@ -155,9 +163,10 @@ def main() -> int:
         env_cls = LookupEnv
         cfg = RunnerConfig(config_id="grpo", seed=step, oracle="answer")
 
-        episodes, rewards = collect_group(
+        episodes, rewards, roll_stats = collect_group(
             task, env_cls, policy_factory, cfg, store=store,
             group_size=args.group_size, workers=args.workers,
+            deadline_s=args.deadline or None,
         )
         advantages = group_advantages(rewards, [task.task_id] * len(rewards))
 
@@ -196,6 +205,7 @@ def main() -> int:
             "mean_reward": sum(rewards) / len(rewards),
             "reward_std": float(torch.tensor(rewards).std(unbiased=False)),
             "solved": sum(1 for r in rewards if r >= 0.999),
+            "truncated": roll_stats.truncated,
             **stats.as_dict(),
         }
         history.append(row)

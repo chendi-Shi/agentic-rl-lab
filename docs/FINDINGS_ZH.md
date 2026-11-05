@@ -105,7 +105,17 @@ agentic RL 没有数据集，rollout 就是数据集，所以采样速度直接�
 
 **6.69 倍，正确答案零损失。**
 
-agent 场景还多一个长尾问题：同组里 1 步和 9 步混着，串行要等最慢那条。partial rollout（超时截断、先算 advantage）是 agent RL 特有的调度问题——仓库里的 `arlab/rollout/partial.py` 有模拟实现，尚未接进真实训练循环。
+agent 场景还多一个长尾问题：同组里 1 步和 9 步混着，串行要等最慢那条。
+
+`arlab/rollout/deadline.py` 实现了真实的 partial rollout：每个 episode 有自己的 wall-clock 预算，超时的策略返回 `None`，runner 就此结束该片段、用已有轨迹照常计分。**截断不需要取消线程或杀进程，只是停止延长它。**
+
+代价是诚实的：被截断的样本通常答案不完整、奖励更低。所以 `RolloutStats` 会同时报告 `wall_seconds`、`truncated`、`p50/p99`，让调用方自己判断这笔交易划不划算。
+
+```bash
+python scripts/bench_partial.py --task agg-sum-all --group 8
+```
+
+脚本先用无限预算跑一遍拿到该任务的天然 p50/p99，再按 `p50 × 1.5` 设定预算跑第二遍——**deadline 不该拍脑袋定常量，拍大了永不触发，拍小了全被砍**。
 
 ---
 
