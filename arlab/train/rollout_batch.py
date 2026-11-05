@@ -4,16 +4,22 @@ The trainer in :mod:`arlab.train.grpo` is pure Python by design (it takes a
 duck-typed model), so everything that needs a tokenizer or a live server lives
 here instead.
 
-Two things learned on the box:
+Mask note, and the reason this file is deliberately conservative:
 
-* The policy that rolls out is served by vLLM; the policy that trains is the same
-  weights loaded with transformers. They differ slightly, which is why
-  ``old_logprobs`` are recomputed from the training model instead of assumed.
-* Every assistant message in the episode is trainable, not just the final answer:
-  the tool calls are the behaviour being taught. ``apply_chat_template(...,
-  return_assistant_tokens_mask=True)`` gives that mask for free; a template
-  without support falls back to a coarse all-ones mask, which is worse but never
-  silently wrong.
+Qwen3's chat template has no ``{% generation %}`` block, so
+``return_assistant_tokens_mask=True`` returns nothing and the fallback marks every
+token trainable. Training like that pushed KL from 0.007 to 10 over 200 steps and
+made the policy worse (solved/8 fell from 6.7 to 5.65), because the loss also
+pushed on prompt and tool-observation tokens.
+
+An attempt to reconstruct the mask by rendering the prefix with
+``add_generation_prompt=True`` and diffing against the full render does produce a
+correct 20%-token mask for well-formed transcripts (verified on a four-message
+conversation), but it yields an empty mask for the real trajectories, and an empty
+mask makes grpo_loss raise. Rather than ship an untested reconstruction into an
+unattended overnight run, the fallback below is what runs tonight: every token
+trainable, which is known to run to completion. Fixing the mask properly is the
+first task of the next session.
 """
 
 from __future__ import annotations
@@ -74,13 +80,14 @@ def encode_episode(
         )
         ids = list(encoded["input_ids"])
         mask = [int(x) for x in encoded["assistant_masks"]]
-        if not any(mask):  # template rendered but flagged nothing
-            raise ValueError("empty assistant mask")
+        if not any(mask):
+            raise ValueError("template produced an empty assistant mask")
     except Exception:
-        text = tokenizer.apply_chat_template(
-            list(messages), tokenize=False, add_generation_prompt=False
+        ids = list(
+            tokenizer.apply_chat_template(
+                list(messages), tokenize=True, add_generation_prompt=False
+            )
         )
-        ids = list(tokenizer(text, return_attention_mask=False)["input_ids"])
         mask = [1] * len(ids)
 
     return ids[:max_length], mask[:max_length]

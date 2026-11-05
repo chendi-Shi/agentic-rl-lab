@@ -25,6 +25,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from arlab.policy.openai import ChatClient, LLMPolicy, system_prompt
+from arlab.rollout.concurrent import collect_records
 from arlab.rollout.runner import RunnerConfig, run_task
 from arlab.store import TraceStore
 from arlab.tasks.lookup_tasks import LookupEnv
@@ -47,20 +48,27 @@ def collect_group(
     *,
     store: TraceStore,
     group_size: int,
+    workers: int = 8,
 ) -> tuple[list[Episode], list[float]]:
     episodes: list[Episode] = []
     rewards: list[float] = []
     system = system_prompt(task.tools)
 
-    for index in range(group_size):
-        # Each rollout needs its own resume key *and* its own sampling seed.
-        # Reusing one seed made all eight samples byte-identical even at
-        # temperature 0.9, because the seed travels in the request body.
-        rollout_cfg = dataclasses.replace(cfg, seed=cfg.seed * 100 + index)
-        policy = policy_factory(rollout_cfg.seed)
-        record = as_dict(
-            run_task(task, env_cls, policy, rollout_cfg, policy_name="llm", store=store)
-        )
+    # Rollouts in a group are independent, so issuing them together is what the
+    # box's vLLM server actually wants: 8 rollouts of one task took 40.8s in a
+    # for-loop and 6.1s issued together, same rewards (scripts/bench_rollout.py).
+    # Each rollout still gets its own sampling seed, because a shared seed made
+    # all eight samples byte-identical even at temperature 0.9.
+    records = collect_records(
+        task,
+        env_cls,
+        policy_factory,
+        cfg,
+        group_size=group_size,
+        workers=workers,
+    )
+    for record in records:
+        record = as_dict(record)
         record["instruction"] = task.instruction
         episodes.append(
             Episode(
@@ -81,6 +89,7 @@ def main() -> int:
     parser.add_argument("--served-model", default="qwen3-4b")
     parser.add_argument("--steps", type=int, default=12)
     parser.add_argument("--group-size", type=int, default=4)
+    parser.add_argument("--workers", type=int, default=8, help="concurrent rollouts; 1 = sequential")
     parser.add_argument("--lr", type=float, default=1e-6)
     parser.add_argument("--kl-coef", type=float, default=0.001)
     parser.add_argument("--lora-dropout", type=float, default=0.05)
@@ -88,6 +97,11 @@ def main() -> int:
     parser.add_argument("--max-length", type=int, default=1536)
     parser.add_argument("--store", type=Path, default=Path("traces/grpo-train.jsonl"))
     parser.add_argument("--out", type=Path, default=Path("reports/grpo-lookup.json"))
+    parser.add_argument(
+        "--tag",
+        default="",
+        help="checkpoint name; required when several runs share one box",
+    )
     args = parser.parse_args()
 
     loaded = load_tasks(args.tasks)
@@ -142,7 +156,8 @@ def main() -> int:
         cfg = RunnerConfig(config_id="grpo", seed=step, oracle="answer")
 
         episodes, rewards = collect_group(
-            task, env_cls, policy_factory, cfg, store=store, group_size=args.group_size
+            task, env_cls, policy_factory, cfg, store=store,
+            group_size=args.group_size, workers=args.workers,
         )
         advantages = group_advantages(rewards, [task.task_id] * len(rewards))
 
@@ -185,6 +200,12 @@ def main() -> int:
         }
         history.append(row)
         print(json.dumps(row, ensure_ascii=False), flush=True)
+
+    ckpt = Path("checkpoints") / f"grpo-{args.tag or str(args.steps) + 'steps'}"
+    ckpt.mkdir(parents=True, exist_ok=True)
+    model.save_pretrained(ckpt)
+    tokenizer.save_pretrained(ckpt)
+    print(f"saved adapter -> {ckpt}")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
