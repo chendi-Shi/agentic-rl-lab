@@ -31,6 +31,7 @@ from typing import Any, Sequence
 
 import torch
 
+from arlab.train.assistant_mask import assistant_token_ids, mark_assistant_spans
 from arlab.train.grpo import TokenBatch, expand_advantages
 
 
@@ -68,26 +69,33 @@ def messages_from_record(record: dict[str, Any], system: str) -> list[dict[str, 
 def encode_episode(
     messages: Sequence[dict[str, Any]], tokenizer, max_length: int = 2048
 ) -> tuple[list[int], list[int]]:
-    """Tokenize a transcript and mark which tokens the model produced."""
+    """Tokenize a transcript and mark which tokens the model produced.
 
-    try:
-        encoded = tokenizer.apply_chat_template(
-            list(messages),
-            tokenize=True,
-            return_assistant_tokens_mask=True,
-            return_dict=True,
-            add_generation_prompt=False,
+    Three attempts, in order, all because Qwen3's template has no
+    ``{% generation %}`` block:
+
+    1. ask the template for an assistant mask -- it returns nothing;
+    2. rebuild it by diffing a ``add_generation_prompt=True`` prefix -- it works on
+       hand-built conversations but came back empty on real trajectories;
+    3. locate the assistant turns directly in the token stream, via
+       :mod:`arlab.train.assistant_mask`.
+
+    The third is what runs. It is pure integer scanning, so it cannot depend on
+    template internals, and if it ever finds no assistant turn the fallback marks
+    everything rather than returning an empty mask -- an empty mask makes
+    ``grpo_loss`` raise and kills a training run, which is exactly what happened
+    when the diffing version met a real trajectory.
+    """
+
+    ids = list(
+        tokenizer.apply_chat_template(
+            list(messages), tokenize=True, add_generation_prompt=False
         )
-        ids = list(encoded["input_ids"])
-        mask = [int(x) for x in encoded["assistant_masks"]]
-        if not any(mask):
-            raise ValueError("template produced an empty assistant mask")
-    except Exception:
-        ids = list(
-            tokenizer.apply_chat_template(
-                list(messages), tokenize=True, add_generation_prompt=False
-            )
-        )
+    )
+
+    start_ids, end_ids = assistant_token_ids(tokenizer)
+    mask = mark_assistant_spans(ids, start_ids, end_ids)
+    if not any(mask):
         mask = [1] * len(ids)
 
     return ids[:max_length], mask[:max_length]
