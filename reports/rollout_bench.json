@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "A sequential",
+    "wall_s": 40.8,
+    "solved": 8,
+    "p50_s": 0.0,
+    "max_s": 0.0,
+    "throughput_per_min": 11.8
+  },
+  {
+    "mode": "B concurrent",
+    "wall_s": 6.1,
+    "solved": 8,
+    "p50_s": 0.0,
+    "max_s": 0.0,
+    "throughput_per_min": 78.3
+  },
+  {
+    "mode": "C conc+cut(20s)",
+    "wall_s": 6.1,
+    "solved": 8,
+    "p50_s": 0.0,
+    "max_s": 0.0,
+    "throughput_per_min": 79.0
+  }
+]

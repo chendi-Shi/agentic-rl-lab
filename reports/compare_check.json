@@ -1,0 +1,44 @@
+{
+  "label_a": "A",
+  "label_b": "B",
+  "store_a": "traces\\final_check.jsonl",
+  "store_b": "traces\\base_scripted.jsonl",
+  "n_shared_tasks": 6,
+  "mean_a": 1.09,
+  "mean_b": 1.09,
+  "diff": 0.0,
+  "ci_low": 0.0,
+  "ci_high": 0.0,
+  "prob_b_better": 0.0,
+  "significant": false,
+  "tokens_out": {
+    "a": 0,
+    "b": 0
+  },
+  "per_task": {
+    "m-01": {
+      "a": 1.09,
+      "b": 1.09
+    },
+    "m-02": {
+      "a": 1.09,
+      "b": 1.09
+    },
+    "m-03": {
+      "a": 1.09,
+      "b": 1.09
+    },
+    "m-04": {
+      "a": 1.09,
+      "b": 1.09
+    },
+    "m-05": {
+      "a": 1.09,
+      "b": 1.09
+    },
+    "m-06": {
+      "a": 1.09,
+      "b": 1.09
+    }
+  }
+}

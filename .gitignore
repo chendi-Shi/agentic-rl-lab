@@ -1,4 +1,4 @@
-﻿__pycache__/
+__pycache__/
 *.py[cod]
 .pytest_cache/
 .pytest_work/
@@ -11,7 +11,7 @@ pytest-cache-files-*/
 traces/
 checkpoints/
 runs/
-reports/
+# reports are curated, small, and are the evidence for every claim in the README
 *.safetensors
 *.pt
 *.sqlite

@@ -1,0 +1,36 @@
+{
+  "policy": "scripted",
+  "oracle": "answer",
+  "config_id": "baseline",
+  "seed": 0,
+  "tasks_file": "tasks\\stage1.json",
+  "run": 6,
+  "skipped": 0,
+  "mean_reward": 1.09,
+  "tokens_in": 0,
+  "tokens_out": 0,
+  "wall_seconds": 0.02,
+  "collapse": {
+    "n_groups": 0,
+    "frac_collapsed": 1.0
+  },
+  "difficulty": {
+    "kept": [],
+    "too_easy": [
+      "m-01",
+      "m-02",
+      "m-03",
+      "m-04",
+      "m-05",
+      "m-06"
+    ],
+    "too_hard": []
+  },
+  "length": {
+    "p50": 1.0,
+    "p90": 1.0,
+    "p99": 1.0,
+    "mean": 1.0,
+    "tail_share": 0.16666666666666666
+  }
+}
