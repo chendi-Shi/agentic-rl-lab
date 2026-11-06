@@ -32,6 +32,7 @@
 评测在 40 道**训练时没见过**的任务上做（训练只轮转到训练集前 40 题，评测取第 100–140 题），5 个采样种子，配对比较。
 
 > 三条最重要的发现，以及踩过的坑，见 [`docs/FINDINGS_ZH.md`](docs/FINDINGS_ZH.md)。
+> **English summary: [`docs/SUMMARY_EN.md`](docs/SUMMARY_EN.md)**
 
 | 模块 | 作用 | 需要 GPU |
 |---|---|---|
