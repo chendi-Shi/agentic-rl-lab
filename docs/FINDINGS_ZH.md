@@ -191,7 +191,7 @@ solve -> fail     40  ( 2.2%)   ← 忘记的
 
 原始评测轨迹在 `data/heldout-eval/`（3.1 MB），`scripts/analyze_gain.py` 可重跑上面所有数字。
 
-
+## 关于 verl
 
 本仓库原本计划用 verl 做训练循环，实际探测后的结论是：
 
