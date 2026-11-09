@@ -73,22 +73,44 @@ step 4  count-over-200  0/8   std=0.00
 
 ---
 
-## 五、mask 写错，KL 从 0.007 涨到 10，模型越训越差
+## 五、KL 爆炸：先归因给 mask，数据打了我的脸
 
-Qwen3 的 chat template 没有 `{% generation %}` 块，`return_assistant_tokens_mask=True` 返回空，我的兜底逻辑把**所有 token 都标成可训练**。
+Qwen3 的 chat template 没有 `{% generation %}` 块，`return_assistant_tokens_mask=True` 返回空，我的兜底逻辑把**所有 token 都标成可训练**——梯度也作用在 prompt 和工具返回的 token 上。
 
-后果：梯度也作用在 prompt 和工具返回的 token 上。
+当时看到的是：
 
 ```
+200 步 / lr 1e-5
 KL:     0.007 → 2.27 → 8.84 → 10.08     (单调上升)
 解出数:  6.70/8 → 5.65/8                  (单调下降)
 ```
 
-**先崩溃的不是 loss，是 KL。**
+我据此写下了"mask 写错导致 KL 爆炸、模型越训越差"。
 
-正确的 mask 只覆盖模型自己生成的 20% token（`<think></think>{"final_answer": ...}`）。构造方法：用 `add_generation_prompt=True` 渲染前缀、与完整渲染比对取差集。
+**后来用 `scripts/kl_trace.py` 把两组粗 mask 的跑分放在一起，结论不成立了：**
 
-> 注意：这个修法在构造的对话上验证通过（17/85 token 可训练），但在真实轨迹上返回空 mask 导致 `grpo_loss` 报错。因为不能拿没验证的改动去跑无人值守实验，最终回退到"全 token"版本。**修 mask 是下一次的第一项任务。**
+| 配置 | 步数 | lr | KL 起点 → 终点 | 峰值 | 判定 |
+|---|---|---|---|---|---|
+| 早期小跑 | 40 | **1e-6** | 0.0033 → 0.0041 | 0.0053 | **STABLE** |
+| c1 | 150 | **3e-5** | 0.0117 → 5.30 | **25.6** | **DIVERGING** |
+
+**两组的 mask 都是粗的**，差别在 lr。所以 KL 发散至少是**学习率**驱动的，mask 不是唯一原因——我原来的归因过强。
+
+更合理的解释是：粗 mask 下 KL 是在**全部 token** 上算的，而梯度确实在推 prompt 和工具返回 token 的分布，所以这个 KL 里混进了大量"对任务无意义的漂移"。**它数值大，但不一定意味着策略在答案上坏了**——证据是 9 轮粗 mask 训练虽然 KL 涨到 10+，held-out 结果仍然是 +3.3 分。
+
+**真正该做的实验因此变了**：不是"修 mask 看 KL 会不会降"，而是
+
+> 换正确 mask、保持 lr 不变，KL 会不会大幅下降？
+> 会 → 粗 mask 把 KL 算虚了，之前那个数字不可比
+> 不会 → KL 就是 lr 驱动的，和 mask 无关
+
+正确的 mask 只覆盖模型自己生成的 ~20% token。实现见 `arlab/train/assistant_mask.py`（在 token 流里直接定位 assistant 回合，纯整数扫描，6 项无卡测试）——这是第三种实现，前两种都失败了：
+
+1. 问模板要 mask → 返回空
+2. 用 `add_generation_prompt=True` 渲染前缀做差集 → 手工构造的对话上正确（17/85 token），**在真实轨迹上返回空**导致 `grpo_loss` 报错
+3. 在 token 流里找 assistant header 与 end-of-turn 标记 → 纯整数扫描，不依赖模板内部实现
+
+因为不能拿没验证的改动去跑无人值守的实验，已提交的 200 步结果是第 1 种（全 token）跑出来的。**这一项的验证是下次开卡的第一件事。**
 
 ---
 
